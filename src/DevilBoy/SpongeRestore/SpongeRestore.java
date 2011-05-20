@@ -69,8 +69,5 @@ public class SpongeRestore extends JavaPlugin {
         debugees.put(player, value);
     }
     
-    public void BlockPlaceEvent(Block placedBlock, BlockState replacedBlockState, Block placedAgainst, ItemStack itemInHand, Player thePlayer, boolean canBuild) {
-    	
-    }
 }
 
