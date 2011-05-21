@@ -36,7 +36,7 @@ public class SpongeRestore extends JavaPlugin {
     String spongeDbLocation = pluginMainDir + "/spongeAreas.dat";
 
     public void onEnable() {
-        spongeAreas = loadSpongeData(spongeDbLocation);
+        spongeAreas = loadSpongeData();
 
         // Register our events
     	PluginManager pm = getServer().getPluginManager();
@@ -56,7 +56,7 @@ public class SpongeRestore extends JavaPlugin {
         System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
     }
     public void onDisable() {
-    	saveSpongeData(spongeAreas, spongeDbLocation);
+    	saveSpongeData();
         System.out.println("SpongeRestore disabled!");
     }
     public boolean isDebugging(final Player player) {
@@ -71,10 +71,10 @@ public class SpongeRestore extends JavaPlugin {
         debugees.put(player, value);
     }
     
-    public void saveSpongeData(HashMap<String, Integer> theSpongeDB, String path) {
+    public void saveSpongeData() {
     	try{
-    		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path));
-    		oos.writeObject(theSpongeDB);
+    		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(spongeDbLocation));
+    		oos.writeObject(spongeAreas);
     		oos.flush();
     		oos.close();
     	} catch(Exception e){
@@ -82,18 +82,18 @@ public class SpongeRestore extends JavaPlugin {
     	}
     }
     
-    public HashMap<String, Integer> loadSpongeData(String path) {
-    	if (!(new File(path)).exists()) {
+    public HashMap<String, Integer> loadSpongeData() {
+    	if (!(new File(spongeDbLocation)).exists()) {
     		// Create the directory and database files!
     		boolean success = (new File(pluginMainDir)).mkdir();
     		if (success) {
     				System.out.println("New SpongeRestore directory created!");
     		}   
-    		saveSpongeData(spongeAreas, path);
+    		saveSpongeData();
     	}
     	
     	try{
-    		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
+    		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(spongeDbLocation));
     		Object result = ois.readObject();
     		//you can feel free to cast result to HashMap<Player,Boolean> if you know there's that HashMap in the file
     		return (HashMap<String, Integer>)result;

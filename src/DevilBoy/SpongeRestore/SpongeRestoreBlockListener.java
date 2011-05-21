@@ -42,6 +42,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	    		}
         		}
     		}
+    		plugin.saveSpongeData();
     	}
     }
     
@@ -71,6 +72,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	    		}
         		}
     		}
+    		plugin.saveSpongeData();
     	}
     }
     
