@@ -26,6 +26,8 @@ import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 
+import DevilBoy.SpongeRestore.Config;
+
 /**
  * SpongeRestore for Bukkit
  *
@@ -35,6 +37,7 @@ public class SpongeRestore extends JavaPlugin {
     private final SpongeRestorePlayerListener playerListener = new SpongeRestorePlayerListener(this);
     private final SpongeRestoreBlockListener blockListener = new SpongeRestoreBlockListener(this);
     private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
+    Config pluginSettings;
     public HashMap<String, Integer> spongeAreas = new HashMap<String, Integer>();
     String pluginMainDir = "./plugins/SpongeRestore";
     String pluginConfigLocation = pluginMainDir + "/SpongeRestore.cfg";
@@ -45,8 +48,19 @@ public class SpongeRestore extends JavaPlugin {
         
         // Obtain Configuration
         try {
-        	Properties pluginSettings = new Properties();
-            pluginSettings.load(new FileInputStream(new File(pluginConfigLocation)));
+        	Properties preSettings = new Properties();
+        	if ((new File(pluginConfigLocation)).exists()) {
+        		preSettings.load(new FileInputStream(new File(pluginConfigLocation)));
+        		pluginSettings = new Config(preSettings, this);
+        	} else {
+        		// Need to set some defaults.
+        		preSettings.setProperty("excludedWorlds", "none");
+        		preSettings.setProperty("spongeSaturation", "false");
+        		preSettings.setProperty("canPlaceWater", "false");
+        		pluginSettings = new Config(preSettings, this);
+        		pluginSettings.createConfig();
+        		System.out.println("SpongeRestore Configuration created!");
+        	}
         } catch (Exception e) {
         	System.out.println("Could not load configuration! " + e);
         }
@@ -104,10 +118,6 @@ public class SpongeRestore extends JavaPlugin {
     		}   
     		saveSpongeData();
     	}
-    	if (!(new File(pluginConfigLocation)).exists()) {
-    		createConfig();
-    		System.out.println("SpongeRestore Configuration created!");
-    	}
     	
     	try{
     		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(spongeDbLocation));
@@ -118,42 +128,6 @@ public class SpongeRestore extends JavaPlugin {
     		e.printStackTrace();
     	}
 		return spongeAreas;
-    }
-    
-    public void createConfig() {
-    	try{
-    		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pluginConfigLocation)));
-    		out.write("#");
-    		out.newLine();
-    		out.write("# SpongeRestore Configuration");
-    		out.newLine();
-    		out.write("#");
-    		out.newLine();
-    		out.write("");
-    		out.newLine();
-    		out.write("# Excluded worlds [names separated by commas]");
-    		out.newLine();
-    		out.write("#	Here you list all the worlds in which you");
-    		out.newLine();
-    		out.write("#	do not want this plugin to work in.");
-    		out.newLine();
-    		out.write("excludedWorlds=none");
-    		out.newLine();
-    		out.write("");
-    		out.newLine();
-    		out.write("# Sponge saturation [true or false]");
-    		out.newLine();
-    		out.write("#	Add more realism to sponges by making them only");
-    		out.newLine();
-    		out.write("#	absorb water from an area without blocking");
-    		out.newLine();
-    		out.write("#	water's flow afterwards.");
-    		out.newLine();
-    		out.write("spongeSaturation=false");
-    		out.close();
-    	} catch (Exception e) {
-    		
-    	}
     }
     
 }

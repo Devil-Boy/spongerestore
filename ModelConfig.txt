@@ -12,3 +12,8 @@ excludedWorlds=none
 #	absorb water from an area without blocking
 #	water's flow afterwards.
 spongeSaturation=false
+
+# Water replacement
+#	Can a player place water near a sponge
+#	while it is still there?
+canPlaceWater=false

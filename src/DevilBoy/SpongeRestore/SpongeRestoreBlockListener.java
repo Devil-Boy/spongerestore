@@ -44,6 +44,8 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		}
     		plugin.saveSpongeData();
     	}
+    	
+    	// Check if water is being placed within sponge's area
     }
     
     public void onBlockFromTo(BlockFromToEvent event) {
