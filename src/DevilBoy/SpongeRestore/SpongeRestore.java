@@ -42,6 +42,7 @@ public class SpongeRestore extends JavaPlugin {
     String pluginMainDir = "./plugins/SpongeRestore";
     String pluginConfigLocation = pluginMainDir + "/SpongeRestore.cfg";
     String spongeDbLocation = pluginMainDir + "/spongeAreas.dat";
+	public boolean debug = true;
 
     public void onEnable() {
         spongeAreas = loadSpongeData();

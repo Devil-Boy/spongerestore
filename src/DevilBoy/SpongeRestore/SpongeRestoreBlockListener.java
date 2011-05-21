@@ -25,15 +25,21 @@ public class SpongeRestoreBlockListener extends BlockListener {
     public void onBlockPlace(BlockPlaceEvent event) {
     	Block involvedBlock = event.getBlock();
     	String theWorld = event.getBlock().getWorld().getName();
-    	System.out.println(event.getPlayer().getName() + " placed a block...");
+    	if(plugin.debug) {
+    		System.out.println(event.getPlayer().getName() + " placed a block...");
+    	}
     	// Check if the block is a Sponge
     	if (isSponge(involvedBlock)) {
-    		System.out.println("and it's a sponge!!!!!");
+    		if(plugin.debug) {
+    			System.out.println("and it's a sponge!!!!!");
+    		}
     		
     		for (int x=-2; x<3; x++) {
     			for (int y=-2; y<3; y++) {
     				for (int z=-2; z<3; z++) {		
-    					System.out.println("Checking: " + x + ", " + y + ", " + z);
+    					if(plugin.debug) {
+    						System.out.println("Checking: " + x + ", " + y + ", " + z);
+    					}
     					Block currentBlock = event.getBlock().getRelative(x, y, z);
     					addToSpongeAreas(getBlockCoords(currentBlock));
     					if (isWater(currentBlock)) {
@@ -49,14 +55,18 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	// Check if a water block is being placed within sponge's area
     	if (!plugin.pluginSettings.canPlaceWater && (isWater(involvedBlock) && plugin.spongeAreas.containsKey(getBlockCoords(involvedBlock)))) {
         	involvedBlock.setType(Material.AIR);
-        	System.out.println("You canot put water there!! :O");
+        	if(plugin.debug) {
+            	System.out.println("You canot put water there!! :O");
+        	}
     	}
     }
     
     public void onBlockFromTo(BlockFromToEvent event) {
     	System.out.println("Water incoming at: " + event.getToBlock().getX() + ", " + event.getToBlock().getY() + ", " + event.getToBlock().getZ());
     	if (plugin.spongeAreas.containsKey(getBlockCoords(event.getToBlock()))) {
-    		System.out.println("Recede from sponge!");
+    		if(plugin.debug) {
+    			System.out.println("Recede from sponge!");
+    		}
     		event.setCancelled(true);
     	}
     }
@@ -64,7 +74,9 @@ public class SpongeRestoreBlockListener extends BlockListener {
     public void onBlockBreak(BlockBreakEvent event) {
     	Block wasSponge = event.getBlock();
     	if (isSponge(wasSponge)) {
-    		System.out.println("Sponge destroyed!");
+    		if(plugin.debug) {
+    			System.out.println("Sponge destroyed!");
+    		}
     		
     		// Check the airea
     		for (int x=-2; x<3; x++) {
@@ -72,7 +84,9 @@ public class SpongeRestoreBlockListener extends BlockListener {
     				for (int z=-2; z<3; z++) {
     					Block currentBlock = wasSponge.getRelative(x, y, z);
     					removeFromSpongeAreas(getBlockCoords(currentBlock));
-    					System.out.println("AirSearching: " + x + ", " + y + ", " + z);
+    					if(plugin.debug) {
+    						System.out.println("AirSearching: " + x + ", " + y + ", " + z);
+    					}
     					if (currentBlock.getType() == Material.AIR) {
     						currentBlock.setTypeId(0, true); // Turn air into air.
     					}
@@ -88,10 +102,14 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	for (int x=-2; x<3; x++) {
 			for (int y=-2; y<3; y++) {
 				for (int z=-2; z<3; z++) {
-					System.out.println("SpongeSearching: " + x + ", " + y + ", " + z);
+					if(plugin.debug) {
+						System.out.println("SpongeSearching: " + x + ", " + y + ", " + z);
+					}
 					Block currentBlock = originBlock.getRelative(x, y, z);
 					if (currentBlock.getTypeId() == 19) {
-						System.out.println("There's a sponge!");
+						if(plugin.debug) {
+							System.out.println("There's a sponge!");
+						}
 						return true;
 					}
 	    		}

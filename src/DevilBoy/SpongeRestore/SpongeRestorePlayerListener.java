@@ -24,13 +24,19 @@ public class SpongeRestorePlayerListener extends PlayerListener {
 
     // Check if water is being dumped in the sponge's area
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-    	System.out.println(event.getBucket() + " emptied!");
+    	if(plugin.debug) {
+    		System.out.println(event.getBucket() + " emptied!");
+    	}
     	Block involvedBlock = event.getBlockClicked().getFace(event.getBlockFace()) ;
     	String dumpLocation = plugin.blockListener.getBlockCoords(involvedBlock);
-    	System.out.println(involvedBlock.getType() + " dumped out!");
+    	if(plugin.debug) {
+    		System.out.println(involvedBlock.getType() + " dumped out!");
+    	}
     	if (!plugin.pluginSettings.canPlaceWater && (event.getBucket() == Material.WATER_BUCKET && plugin.spongeAreas.containsKey(dumpLocation))) {
         	event.setCancelled(true);
-        	System.out.println("You canot dump water there!! :O (" + dumpLocation + ")");
+        	if(plugin.debug) {
+        		System.out.println("You canot dump water there!! :O (" + dumpLocation + ")");
+        	}
         	event.setItemStack(new ItemStack(325));
     	}
     }
