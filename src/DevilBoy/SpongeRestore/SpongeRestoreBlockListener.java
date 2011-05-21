@@ -23,10 +23,11 @@ public class SpongeRestoreBlockListener extends BlockListener {
 
     // Catch the events!
     public void onBlockPlace(BlockPlaceEvent event) {
+    	Block involvedBlock = event.getBlock();
     	String theWorld = event.getBlock().getWorld().getName();
     	System.out.println(event.getPlayer().getName() + " placed a block...");
     	// Check if the block is a Sponge
-    	if (isSponge(event.getBlock())) {
+    	if (isSponge(involvedBlock)) {
     		System.out.println("and it's a sponge!!!!!");
     		
     		for (int x=-2; x<3; x++) {
@@ -35,7 +36,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     					System.out.println("Checking: " + x + ", " + y + ", " + z);
     					Block currentBlock = event.getBlock().getRelative(x, y, z);
     					addToSpongeAreas(getBlockCoords(currentBlock));
-    					if (currentBlock.getTypeId() == 8 || currentBlock.getTypeId() == 9) {
+    					if (isWater(currentBlock)) {
     						currentBlock.setType(Material.AIR);
     						System.out.println("The sponge absorbed water.");
     					}
@@ -45,7 +46,11 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		plugin.saveSpongeData();
     	}
     	
-    	// Check if water is being placed within sponge's area
+    	// Check if a water block is being placed within sponge's area
+    	if (!plugin.pluginSettings.canPlaceWater && (isWater(involvedBlock) && plugin.spongeAreas.containsKey(getBlockCoords(involvedBlock)))) {
+        	involvedBlock.setType(Material.AIR);
+        	System.out.println("You canot put water there!! :O");
+    	}
     }
     
     public void onBlockFromTo(BlockFromToEvent event) {
@@ -118,6 +123,14 @@ public class SpongeRestoreBlockListener extends BlockListener {
     
     public boolean isSponge(Block theBlock) {
     	if (theBlock.getType() == Material.SPONGE) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
+    public boolean isWater(Block theBlock) {
+    	if (theBlock.getTypeId() == 8 || theBlock.getTypeId() == 9) {
     		return true;
     	} else {
     		return false;

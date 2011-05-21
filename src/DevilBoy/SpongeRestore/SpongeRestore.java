@@ -34,8 +34,8 @@ import DevilBoy.SpongeRestore.Config;
  * @author DevilBoy
  */
 public class SpongeRestore extends JavaPlugin {
-    private final SpongeRestorePlayerListener playerListener = new SpongeRestorePlayerListener(this);
-    private final SpongeRestoreBlockListener blockListener = new SpongeRestoreBlockListener(this);
+    public final SpongeRestorePlayerListener playerListener = new SpongeRestorePlayerListener(this);
+    public final SpongeRestoreBlockListener blockListener = new SpongeRestoreBlockListener(this);
     private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
     Config pluginSettings;
     public HashMap<String, Integer> spongeAreas = new HashMap<String, Integer>();
@@ -70,6 +70,7 @@ public class SpongeRestore extends JavaPlugin {
     	pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
     	pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, Priority.Normal, this);
     	pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
+    	pm.registerEvent(Event.Type.PLAYER_BUCKET_EMPTY , playerListener, Priority.Normal, this);
     	
     	//Adding sponge recipe
     	ShapedRecipe spongerecipie = new ShapedRecipe(new ItemStack(19));
