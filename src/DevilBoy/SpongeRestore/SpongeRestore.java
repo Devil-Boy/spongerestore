@@ -1,11 +1,15 @@
 package DevilBoy.SpongeRestore;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -33,11 +37,20 @@ public class SpongeRestore extends JavaPlugin {
     private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
     public HashMap<String, Integer> spongeAreas = new HashMap<String, Integer>();
     String pluginMainDir = "./plugins/SpongeRestore";
+    String pluginConfigLocation = pluginMainDir + "/SpongeRestore.cfg";
     String spongeDbLocation = pluginMainDir + "/spongeAreas.dat";
 
     public void onEnable() {
         spongeAreas = loadSpongeData();
-
+        
+        // Obtain Configuration
+        try {
+        	Properties pluginSettings = new Properties();
+            pluginSettings.load(new FileInputStream(new File(pluginConfigLocation)));
+        } catch (Exception e) {
+        	System.out.println("Could not load configuration! " + e);
+        }
+        
         // Register our events
     	PluginManager pm = getServer().getPluginManager();
     	pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
@@ -87,9 +100,13 @@ public class SpongeRestore extends JavaPlugin {
     		// Create the directory and database files!
     		boolean success = (new File(pluginMainDir)).mkdir();
     		if (success) {
-    				System.out.println("New SpongeRestore directory created!");
+    			System.out.println("New SpongeRestore directory created!");
     		}   
     		saveSpongeData();
+    	}
+    	if (!(new File(pluginConfigLocation)).exists()) {
+    		createConfig();
+    		System.out.println("SpongeRestore Configuration created!");
     	}
     	
     	try{
@@ -101,6 +118,42 @@ public class SpongeRestore extends JavaPlugin {
     		e.printStackTrace();
     	}
 		return spongeAreas;
+    }
+    
+    public void createConfig() {
+    	try{
+    		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pluginConfigLocation)));
+    		out.write("#");
+    		out.newLine();
+    		out.write("# SpongeRestore Configuration");
+    		out.newLine();
+    		out.write("#");
+    		out.newLine();
+    		out.write("");
+    		out.newLine();
+    		out.write("# Excluded worlds [names separated by commas]");
+    		out.newLine();
+    		out.write("#	Here you list all the worlds in which you");
+    		out.newLine();
+    		out.write("#	do not want this plugin to work in.");
+    		out.newLine();
+    		out.write("excludedWorlds=none");
+    		out.newLine();
+    		out.write("");
+    		out.newLine();
+    		out.write("# Sponge saturation [true or false]");
+    		out.newLine();
+    		out.write("#	Add more realism to sponges by making them only");
+    		out.newLine();
+    		out.write("#	absorb water from an area without blocking");
+    		out.newLine();
+    		out.write("#	water's flow afterwards.");
+    		out.newLine();
+    		out.write("spongeSaturation=false");
+    		out.close();
+    	} catch (Exception e) {
+    		
+    	}
     }
     
 }

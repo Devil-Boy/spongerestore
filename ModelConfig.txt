@@ -1,0 +1,14 @@
+#
+# SpongeRestore Configuration
+#
+
+# Excluded worlds [names separated by commas]
+#	Here you list all the worlds in which you
+#	do not want this plugin to work in.
+excludedWorlds=none
+
+# Sponge saturation [true or false]
+#	Add more realism to sponges by making them only
+#	absorb water from an area without blocking
+#	water's flow afterwards.
+spongeSaturation=false
