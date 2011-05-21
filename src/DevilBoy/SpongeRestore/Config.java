@@ -21,9 +21,9 @@ public class Config implements java.io.Serializable {
         this.plugin = plugin;
         
         // Grab values here.
-        excludedWorlds = getList("excludedWorlds");
-        spongeSaturation = getBoolean("spongeSaturation");
-        canPlaceWater = getBoolean("canPlaceWater");
+        excludedWorlds = getList("excludedWorlds", "none");
+        spongeSaturation = getBoolean("spongeSaturation", false);
+        canPlaceWater = getBoolean("canPlaceWater", false);
         
     }
 	
@@ -42,9 +42,14 @@ public class Config implements java.io.Serializable {
         return new File(value);
     }
 
-    public boolean getBoolean(String label) {
-        String value = getString(label);
-        return Boolean.valueOf(value).booleanValue();
+    public boolean getBoolean(String label, boolean thedefault) {
+    	String values;
+        try {
+        	values = getString(label);
+        	return Boolean.valueOf(values).booleanValue();
+        }catch (NoSuchElementException e) {
+        	return thedefault;
+        }
     }
     
     public Color getColor(String label) {
@@ -53,8 +58,13 @@ public class Config implements java.io.Serializable {
         return color;
     }
     
-    public HashSet getSet(String label) {
-        String values = getString(label);
+    public HashSet getSet(String label, String thedefault) {
+        String values;
+        try {
+        	values = getString(label);
+        }catch (NoSuchElementException e) {
+        	values = thedefault;
+        }
         String[] tokens = values.split(",");
         HashSet set = new HashSet();
         for (int i = 0; i < tokens.length; i++) {
@@ -63,8 +73,13 @@ public class Config implements java.io.Serializable {
         return set;
     }
     
-    public LinkedList getList(String label) {
-    	String values = getString(label);
+    public LinkedList getList(String label, String thedefault) {
+    	String values;
+        try {
+        	values = getString(label);
+        }catch (NoSuchElementException e) {
+        	values = thedefault;
+        }
         String[] tokens = values.split(",");
         LinkedList set = new LinkedList();
         for (int i = 0; i < tokens.length; i++) {
