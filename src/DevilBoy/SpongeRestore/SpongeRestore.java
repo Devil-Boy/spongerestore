@@ -1,6 +1,10 @@
 package DevilBoy.SpongeRestore;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
 import org.bukkit.block.Block;
@@ -27,10 +31,12 @@ public class SpongeRestore extends JavaPlugin {
     private final SpongeRestorePlayerListener playerListener = new SpongeRestorePlayerListener(this);
     private final SpongeRestoreBlockListener blockListener = new SpongeRestoreBlockListener(this);
     private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
-    public final HashMap<String, Integer> spongeAreas = new HashMap<String, Integer>();
+    public HashMap<String, Integer> spongeAreas = new HashMap<String, Integer>();
+    String pluginMainDir = "./plugins/SpongeRestore";
+    String spongeDbLocation = pluginMainDir + "/spongeAreas.dat";
 
     public void onEnable() {
-        // TODO: Place any custom enable code here including the registration of any events
+        spongeAreas = loadSpongeData(spongeDbLocation);
 
         // Register our events
     	PluginManager pm = getServer().getPluginManager();
@@ -50,11 +56,7 @@ public class SpongeRestore extends JavaPlugin {
         System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
     }
     public void onDisable() {
-        // TODO: Place any custom disable code here
-
-        // NOTE: All registered events are automatically unregistered when a plugin is disabled
-
-        // EXAMPLE: Custom code, here we just output some info so we can check all is well
+    	saveSpongeData(spongeAreas, spongeDbLocation);
         System.out.println("SpongeRestore disabled!");
     }
     public boolean isDebugging(final Player player) {
@@ -67,6 +69,38 @@ public class SpongeRestore extends JavaPlugin {
 
     public void setDebugging(final Player player, final boolean value) {
         debugees.put(player, value);
+    }
+    
+    public void saveSpongeData(HashMap<String, Integer> theSpongeDB, String path) {
+    	try{
+    		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path));
+    		oos.writeObject(theSpongeDB);
+    		oos.flush();
+    		oos.close();
+    	} catch(Exception e){
+    		e.printStackTrace();
+    	}
+    }
+    
+    public HashMap<String, Integer> loadSpongeData(String path) {
+    	if (!(new File(path)).exists()) {
+    		// Create the directory and database files!
+    		boolean success = (new File(pluginMainDir)).mkdir();
+    		if (success) {
+    				System.out.println("New SpongeRestore directory created!");
+    		}   
+    		saveSpongeData(spongeAreas, path);
+    	}
+    	
+    	try{
+    		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
+    		Object result = ois.readObject();
+    		//you can feel free to cast result to HashMap<Player,Boolean> if you know there's that HashMap in the file
+    		return (HashMap<String, Integer>)result;
+    	} catch(Exception e){
+    		e.printStackTrace();
+    	}
+		return spongeAreas;
     }
     
 }
