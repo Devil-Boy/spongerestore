@@ -44,7 +44,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     					addToSpongeAreas(getBlockCoords(currentBlock));
     					if (isWater(currentBlock)) {
     						currentBlock.setType(Material.AIR);
-    						if(plugin.debug) {
+    						if (plugin.debug) {
     							System.out.println("The sponge absorbed water.");
     						}
     					}
