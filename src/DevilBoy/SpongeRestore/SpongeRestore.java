@@ -42,7 +42,7 @@ public class SpongeRestore extends JavaPlugin {
     String pluginMainDir = "./plugins/SpongeRestore";
     String pluginConfigLocation = pluginMainDir + "/SpongeRestore.cfg";
     String spongeDbLocation = pluginMainDir + "/spongeAreas.dat";
-	public boolean debug = true;
+	public boolean debug = false;
 
     public void onEnable() {
         spongeAreas = loadSpongeData();
@@ -69,8 +69,12 @@ public class SpongeRestore extends JavaPlugin {
         // Register our events
     	PluginManager pm = getServer().getPluginManager();
     	pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
-    	pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, Priority.Normal, this);
-    	pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
+    	//The block fromto listener, and block break only need to be activated if sponge
+    	//Saturation is off.
+    	if(!pluginSettings.spongeSaturation) {
+    		pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, Priority.Normal, this);
+    		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
+    	}
     	pm.registerEvent(Event.Type.PLAYER_BUCKET_EMPTY , playerListener, Priority.Normal, this);
     	
     	//Adding sponge recipe

@@ -80,6 +80,9 @@ public class Config implements java.io.Serializable {
         }catch (NoSuchElementException e) {
         	values = thedefault;
         }
+        if(plugin.debug) {
+        	System.out.println("List from file: " + values);
+        }
         String[] tokens = values.split(",");
         LinkedList set = new LinkedList();
         for (int i = 0; i < tokens.length; i++) {

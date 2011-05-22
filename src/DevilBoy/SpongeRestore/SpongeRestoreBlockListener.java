@@ -29,7 +29,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		System.out.println(event.getPlayer().getName() + " placed a block...");
     	}
     	// Check if the block is a Sponge
-    	if (isSponge(involvedBlock)) {
+    	if (isSponge(involvedBlock) && !plugin.pluginSettings.excludedWorlds.contains(theWorld)) {
     		if(plugin.debug) {
     			System.out.println("and it's a sponge!!!!!");
     		}
@@ -63,7 +63,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     
     public void onBlockFromTo(BlockFromToEvent event) {
     	System.out.println("Water incoming at: " + event.getToBlock().getX() + ", " + event.getToBlock().getY() + ", " + event.getToBlock().getZ());
-    	if (plugin.spongeAreas.containsKey(getBlockCoords(event.getToBlock()))) {
+    	if (plugin.spongeAreas.containsKey(getBlockCoords(event.getToBlock())) && !plugin.pluginSettings.excludedWorlds.contains(event.getToBlock().getWorld().getName())) {
     		if(plugin.debug) {
     			System.out.println("Recede from sponge!");
     		}
