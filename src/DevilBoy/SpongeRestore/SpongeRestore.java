@@ -75,7 +75,7 @@ public class SpongeRestore extends JavaPlugin {
     	pm.registerEvent(Event.Type.PLAYER_BUCKET_EMPTY , playerListener, Priority.Normal, this);
     	
     	//Adding sponge recipe
-    	ShapedRecipe spongerecipie = new ShapedRecipe(new ItemStack(19));
+    	ShapedRecipe spongerecipie = new ShapedRecipe(new ItemStack(19, 1));
         spongerecipie.shape("SXS","XSX","SXS");
         spongerecipie.setIngredient('S', Material.SAND);
         spongerecipie.setIngredient('X', Material.STRING);
