@@ -15,6 +15,7 @@ public class Config implements java.io.Serializable {
 	LinkedList excludedWorlds;
 	boolean spongeSaturation;
 	boolean canPlaceWater;
+	boolean debug;
 	
 	public Config(Properties p, final SpongeRestore plugin) throws NoSuchElementException {
         properties = p;
@@ -24,6 +25,7 @@ public class Config implements java.io.Serializable {
         excludedWorlds = getList("excludedWorlds", "none");
         spongeSaturation = getBoolean("spongeSaturation", false);
         canPlaceWater = getBoolean("canPlaceWater", false);
+        debug = getBoolean("debug", false);
         
     }
 	

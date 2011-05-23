@@ -50,6 +50,7 @@ public class SpongeRestore extends JavaPlugin {
         	if ((new File(pluginConfigLocation)).exists()) {
         		preSettings.load(new FileInputStream(new File(pluginConfigLocation)));
         		pluginSettings = new Config(preSettings, this);
+        		debug = pluginSettings.debug;
         	} else {
         		// Need to set some defaults.
         		preSettings.setProperty("excludedWorlds", "none");

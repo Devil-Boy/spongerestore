@@ -16,9 +16,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
  */
 public class SpongeRestoreBlockListener extends BlockListener {
     private final SpongeRestore plugin;
+    private Config pluginSettings;
 
     public SpongeRestoreBlockListener(final SpongeRestore plugin) {
         this.plugin = plugin;
+        pluginSettings = plugin.pluginSettings;
     }
 
     // Catch the events!
@@ -29,7 +31,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		System.out.println(event.getPlayer().getName() + " placed a block...");
     	}
     	// Check if the block is a Sponge
-    	if (isSponge(involvedBlock) && !plugin.pluginSettings.excludedWorlds.contains(theWorld)) {
+    	if (isSponge(involvedBlock) && !pluginSettings.excludedWorlds.contains(theWorld)) {
     		if(plugin.debug) {
     			System.out.println("and it's a sponge!!!!!");
     		}
@@ -55,7 +57,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	}
     	
     	// Check if a water block is being placed within sponge's area
-    	if (!plugin.pluginSettings.canPlaceWater && (isWater(involvedBlock) && plugin.spongeAreas.containsKey(getBlockCoords(involvedBlock)))) {
+    	if (!pluginSettings.canPlaceWater && (isWater(involvedBlock) && plugin.spongeAreas.containsKey(getBlockCoords(involvedBlock)))) {
         	involvedBlock.setType(Material.AIR);
         	if(plugin.debug) {
             	System.out.println("You canot put water there!! :O");
@@ -67,7 +69,8 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	if(plugin.debug) {
     		System.out.println("Water incoming at: " + event.getToBlock().getX() + ", " + event.getToBlock().getY() + ", " + event.getToBlock().getZ());
     	}
-    	if (plugin.spongeAreas.containsKey(getBlockCoords(event.getToBlock())) && !plugin.pluginSettings.excludedWorlds.contains(event.getToBlock().getWorld().getName())) {
+    	if (plugin.spongeAreas.containsKey(getBlockCoords(event.getToBlock())) && 
+    			!pluginSettings.excludedWorlds.contains(event.getToBlock().getWorld().getName())) {
     		if(plugin.debug) {
     			System.out.println("Recede from sponge!");
     		}

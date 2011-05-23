@@ -17,9 +17,11 @@ import org.bukkit.inventory.ItemStack;
  */
 public class SpongeRestorePlayerListener extends PlayerListener {
     private final SpongeRestore plugin;
+    private Config pluginSettings;
 
     public SpongeRestorePlayerListener(SpongeRestore instance) {
         plugin = instance;
+        pluginSettings = instance.pluginSettings;
     }
 
     // Check if water is being dumped in the sponge's area
@@ -32,10 +34,10 @@ public class SpongeRestorePlayerListener extends PlayerListener {
     	if(plugin.debug) {
     		System.out.println(involvedBlock.getType() + " dumped out!");
     	}
-    	if (!plugin.pluginSettings.canPlaceWater && (event.getBucket() == Material.WATER_BUCKET && plugin.spongeAreas.containsKey(dumpLocation))) {
+    	if (!pluginSettings.canPlaceWater && (event.getBucket() == Material.WATER_BUCKET && plugin.spongeAreas.containsKey(dumpLocation))) {
         	event.setCancelled(true);
         	if(plugin.debug) {
-        		System.out.println("You canot dump water there!! :O (" + dumpLocation + ")");
+        		System.out.println("You can't dump water there!! :O (" + dumpLocation + ")");
         	}
         	event.setItemStack(new ItemStack(325));
     	}
