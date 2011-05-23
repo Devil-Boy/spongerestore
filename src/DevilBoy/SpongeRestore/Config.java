@@ -141,6 +141,36 @@ public class Config implements java.io.Serializable {
     		out.write("#	while it is still there?");
     		out.newLine();
     		out.write("canPlaceWater=false");
+    		out.newLine();
+    		out.write("");
+    		out.newLine();
+    		out.write("# Craftable Sponges");
+    		out.newLine();
+    		out.write("#	Choose whether players can craft sponges or not.");
+    		out.newLine();
+    		out.write("craftableSponges=true");
+    		out.newLine();
+    		out.write("");
+    		out.newLine();
+    		out.write("# Lava");
+    		out.newLine();
+    		out.write("#	Should lava be affected also? Lava will be treated");
+    		out.newLine();
+    		out.write("#	exactly like water as chosen in previous settings.");
+    		out.newLine();
+    		out.write("lavaToo=false");
+    		out.newLine();
+    		out.write("");
+    		out.newLine();
+    		out.write("# Debug Messages");
+    		out.newLine();
+    		out.write("#	This tends to spam your console, so you'd be best");
+    		out.newLine();
+    		out.write("#	served leaving this off unless you know what");
+    		out.newLine();
+    		out.write("#	you're doing.");
+    		out.newLine();
+    		out.write("debug=false");
     		out.close();
     	} catch (Exception e) {
     		// Not sure what to do? O.o
