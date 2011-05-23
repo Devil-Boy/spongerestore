@@ -36,7 +36,7 @@ public class SpongeRestorePlayerListener extends PlayerListener {
     	if(plugin.debug) {
     		System.out.println(involvedBlock.getType() + " dumped out!");
     	}
-    	if (!pluginSettings.canPlaceWater && ((bucketType == Material.WATER_BUCKET || (pluginSettings.absorbLava && bucketType == Material.WATER_BUCKET)) && plugin.spongeAreas.containsKey(dumpLocation))) {
+    	if (!pluginSettings.canPlaceWater && ((bucketType == Material.WATER_BUCKET || (pluginSettings.absorbLava && bucketType == Material.LAVA_BUCKET)) && plugin.spongeAreas.containsKey(dumpLocation))) {
         	event.setCancelled(true);
         	if(plugin.debug) {
         		System.out.println("You can't dump liquid there!! :O (" + dumpLocation + ")");
