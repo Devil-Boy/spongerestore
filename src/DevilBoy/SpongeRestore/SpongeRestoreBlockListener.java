@@ -177,4 +177,9 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		return false;
     	}
     }
+
+	public void setConfig(Config pluginSettings2) {
+		pluginSettings = pluginSettings2;
+		
+	}
 }

@@ -44,5 +44,10 @@ public class SpongeRestorePlayerListener extends PlayerListener {
         	event.setItemStack(new ItemStack(325));
     	}
     }
+
+	public void setConfig(Config pluginSettings2) {
+		pluginSettings = pluginSettings2;
+		
+	}
 }
 

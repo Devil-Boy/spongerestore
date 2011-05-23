@@ -64,7 +64,8 @@ public class SpongeRestore extends JavaPlugin {
         } catch (Exception e) {
         	System.out.println("Could not load configuration! " + e);
         }
-        
+        blockListener.setConfig(pluginSettings);
+        playerListener.setConfig(pluginSettings);
         // Register our events
     	PluginManager pm = getServer().getPluginManager();
     	pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
