@@ -29,7 +29,12 @@ import DevilBoy.SpongeRestore.Config;
  * SpongeRestore for Bukkit
  *
  * @author DevilBoy
+ * 
+ * TODO: Give sponges self-consciousness.
+ * TODO: Grant sponges locomotion.
+ * TODO: Inject sponges with the lust for domination over all liquids in the Minecraft universe, including those within the bodies of living humans.
  */
+
 public class SpongeRestore extends JavaPlugin {
     public final SpongeRestorePlayerListener playerListener = new SpongeRestorePlayerListener(this);
     public final SpongeRestoreBlockListener blockListener = new SpongeRestoreBlockListener(this);
@@ -52,10 +57,6 @@ public class SpongeRestore extends JavaPlugin {
         		pluginSettings = new Config(preSettings, this);
         		debug = pluginSettings.debug;
         	} else {
-        		// Need to set some defaults.
-        		preSettings.setProperty("excludedWorlds", "none");
-        		preSettings.setProperty("spongeSaturation", "false");
-        		preSettings.setProperty("canPlaceWater", "false");
         		pluginSettings = new Config(preSettings, this);
         		pluginSettings.createConfig();
         		System.out.println("SpongeRestore Configuration created!");
@@ -75,12 +76,14 @@ public class SpongeRestore extends JavaPlugin {
     	}
     	pm.registerEvent(Event.Type.PLAYER_BUCKET_EMPTY , playerListener, Priority.Normal, this);
     	
-    	//Adding sponge recipe
-    	ShapedRecipe spongerecipie = new ShapedRecipe(new ItemStack(19, 1));
-        spongerecipie.shape("SXS","XSX","SXS");
-        spongerecipie.setIngredient('S', Material.SAND);
-        spongerecipie.setIngredient('X', Material.STRING);
-        getServer().addRecipe(spongerecipie);
+    	// Adding sponge recipe
+    	if (pluginSettings.craftableSponges) {
+	    	ShapedRecipe spongerecipie = new ShapedRecipe(new ItemStack(19, 1));
+	        spongerecipie.shape("SXS","XSX","SXS");
+	        spongerecipie.setIngredient('S', Material.SAND);
+	        spongerecipie.setIngredient('X', Material.STRING);
+	        getServer().addRecipe(spongerecipie);
+    	}
 
         // EXAMPLE: Custom code, here we just output some info so we can check all is well
         PluginDescriptionFile pdfFile = this.getDescription();

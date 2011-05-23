@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
  * Handle events for all Player related events
  * @author DevilBoy
  */
+
 public class SpongeRestorePlayerListener extends PlayerListener {
     private final SpongeRestore plugin;
     private Config pluginSettings;

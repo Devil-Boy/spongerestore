@@ -7,6 +7,11 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.*;
 
+/**
+ * Editable configuration class (user input)
+ * @author DevilBoy
+ */
+
 public class Config implements java.io.Serializable {
 	private Properties properties;
 	private final SpongeRestore plugin;
@@ -155,7 +160,7 @@ public class Config implements java.io.Serializable {
     		out.write("\n");
     		out.write("# Lava\n");
     		out.write("#	Should lava be affected also? Lava will be treated\n");
-    		out.write("#	exactly like water as chosen in previous settings.\n");
+    		out.write("#	exactly like water as chosen in the other settings.\n");
     		out.write("absorbLava=" + absorbLava + "\n");
     		out.write("\n");
     		out.write("# Debug Messages\n");

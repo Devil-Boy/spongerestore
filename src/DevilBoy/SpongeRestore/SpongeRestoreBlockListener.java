@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
  * SpongeRestore block listener
  * @author DevilBoy
  */
+
 public class SpongeRestoreBlockListener extends BlockListener {
     private final SpongeRestore plugin;
     private Config pluginSettings;
@@ -36,6 +37,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     			System.out.println("and it's a sponge!!!!!");
     		}
     		
+    		// Check for water or Lava
     		for (int x=-2; x<3; x++) {
     			for (int y=-2; y<3; y++) {
     				for (int z=-2; z<3; z++) {		
@@ -44,10 +46,10 @@ public class SpongeRestoreBlockListener extends BlockListener {
     					}
     					Block currentBlock = event.getBlock().getRelative(x, y, z);
     					addToSpongeAreas(getBlockCoords(currentBlock));
-    					if (isWater(currentBlock)) {
+    					if (isWater(currentBlock) || (pluginSettings.absorbLava && isLava(currentBlock))) {
     						currentBlock.setType(Material.AIR);
     						if (plugin.debug) {
-    							System.out.println("The sponge absorbed water.");
+    							System.out.println("The sponge absorbed " + currentBlock.getType());
     						}
     					}
     	    		}
@@ -57,24 +59,30 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	}
     	
     	// Check if a water block is being placed within sponge's area
-    	if (!pluginSettings.canPlaceWater && (isWater(involvedBlock) && plugin.spongeAreas.containsKey(getBlockCoords(involvedBlock)))) {
+    	if (!pluginSettings.canPlaceWater && ((isWater(involvedBlock) || (pluginSettings.absorbLava && isLava(involvedBlock))) && plugin.spongeAreas.containsKey(getBlockCoords(involvedBlock)))) {
         	involvedBlock.setType(Material.AIR);
         	if(plugin.debug) {
-            	System.out.println("You canot put water there!! :O");
+            	System.out.println("You canot put liquid there!! :O");
         	}
     	}
     }
     
     public void onBlockFromTo(BlockFromToEvent event) {
     	if(plugin.debug) {
-    		System.out.println("Water incoming at: " + event.getToBlock().getX() + ", " + event.getToBlock().getY() + ", " + event.getToBlock().getZ());
+    		System.out.println("Liquid incoming at: " + event.getToBlock().getX() + ", " + event.getToBlock().getY() + ", " + event.getToBlock().getZ());
     	}
     	if (plugin.spongeAreas.containsKey(getBlockCoords(event.getToBlock())) && 
     			!pluginSettings.excludedWorlds.contains(event.getToBlock().getWorld().getName())) {
     		if(plugin.debug) {
     			System.out.println("Recede from sponge!");
     		}
-    		event.setCancelled(true);
+    		if (isLava(event.getBlock())) {
+    			if (pluginSettings.absorbLava) {
+    				event.setCancelled(true);
+    			}
+    		} else if (isWater(event.getBlock())) {
+    			event.setCancelled(true);
+    		}
     	}
     }
     
@@ -156,6 +164,14 @@ public class SpongeRestoreBlockListener extends BlockListener {
     
     public boolean isWater(Block theBlock) {
     	if (theBlock.getTypeId() == 8 || theBlock.getTypeId() == 9) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
+    public boolean isLava(Block theBlock) {
+    	if (theBlock.getTypeId() == 10 || theBlock.getTypeId() == 11) {
     		return true;
     	} else {
     		return false;
