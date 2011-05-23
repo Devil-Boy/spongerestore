@@ -25,7 +25,7 @@ craftableSponges=true
 # Lava
 #	Should lava be affected also? Lava will be treated
 #	exactly like water as chosen in previous settings.
-lavaToo=false
+absorbLava=false
 
 # Debug Messages
 #	This tends to spam your console, so you'd be best

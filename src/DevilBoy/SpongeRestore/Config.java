@@ -12,20 +12,24 @@ public class Config implements java.io.Serializable {
 	private final SpongeRestore plugin;
 	
 	// List of Config Options
-	LinkedList excludedWorlds;
-	boolean spongeSaturation;
-	boolean canPlaceWater;
-	boolean debug;
+	LinkedList<String> excludedWorlds = new LinkedList<String>();
+	boolean spongeSaturation = false;
+	boolean canPlaceWater = false;
+	boolean debug = false;
+	boolean craftableSponges = true;
+	boolean absorbLava = false;
 	
 	public Config(Properties p, final SpongeRestore plugin) throws NoSuchElementException {
         properties = p;
         this.plugin = plugin;
         
         // Grab values here.
-        excludedWorlds = getList("excludedWorlds", "none");
+        excludedWorlds = getList("excludedWorlds", "");
         spongeSaturation = getBoolean("spongeSaturation", false);
         canPlaceWater = getBoolean("canPlaceWater", false);
         debug = getBoolean("debug", false);
+        craftableSponges = getBoolean("craftableSponges", true);
+        absorbLava = getBoolean("absorbLava", false);
         
     }
 	
@@ -60,7 +64,7 @@ public class Config implements java.io.Serializable {
         return color;
     }
     
-    public HashSet getSet(String label, String thedefault) {
+    public HashSet<String> getSet(String label, String thedefault) {
         String values;
         try {
         	values = getString(label);
@@ -68,14 +72,14 @@ public class Config implements java.io.Serializable {
         	values = thedefault;
         }
         String[] tokens = values.split(",");
-        HashSet set = new HashSet();
+        HashSet<String> set = new HashSet<String>();
         for (int i = 0; i < tokens.length; i++) {
             set.add(tokens[i].trim().toLowerCase());
         }
         return set;
     }
     
-    public LinkedList getList(String label, String thedefault) {
+    public LinkedList<String> getList(String label, String thedefault) {
     	String values;
         try {
         	values = getString(label);
@@ -85,12 +89,16 @@ public class Config implements java.io.Serializable {
         if(plugin.debug) {
         	System.out.println("List from file: " + values);
         }
-        String[] tokens = values.split(",");
-        LinkedList set = new LinkedList();
-        for (int i = 0; i < tokens.length; i++) {
-            set.add(tokens[i].trim().toLowerCase());
+        if(!values.equals("")) {
+            String[] tokens = values.split(",");
+            LinkedList<String> set = new LinkedList<String>();
+            for (int i = 0; i < tokens.length; i++) {
+                set.add(tokens[i].trim().toLowerCase());
+            }
+            return set;
+        }else {
+        	return new LinkedList<String>();
         }
-        return set;
     }
     
     public String getString(String label) throws NoSuchElementException {
@@ -101,76 +109,60 @@ public class Config implements java.io.Serializable {
         return value;
     }
     
+    public String linkedListToString(LinkedList<String> list) {
+    	if(list.size() > 0) {
+    		String compounded = "";
+    		boolean first = true;
+        	for(String value : list) {
+        		if(first) {
+        			compounded = value;
+        			first = false;
+        		}else {
+        			compounded = compounded + "," + value;
+        		}
+        	}
+        	return compounded;
+    	}
+    	return "";
+    }
+    
     public void createConfig() {
     	try{
     		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(plugin.pluginConfigLocation)));
-    		out.write("#");
-    		out.newLine();
-    		out.write("# SpongeRestore Configuration");
-    		out.newLine();
-    		out.write("#");
-    		out.newLine();
-    		out.write("");
-    		out.newLine();
-    		out.write("# Excluded worlds [names separated by commas]");
-    		out.newLine();
-    		out.write("#	Here you list all the worlds in which you");
-    		out.newLine();
-    		out.write("#	do not want this plugin to work in.");
-    		out.newLine();
-    		out.write("excludedWorlds=none");
-    		out.newLine();
-    		out.write("");
-    		out.newLine();
-    		out.write("# Sponge saturation [true or false]");
-    		out.newLine();
-    		out.write("#	Add more realism to sponges by making them only");
-    		out.newLine();
-    		out.write("#	absorb water from an area without blocking");
-    		out.newLine();
-    		out.write("#	water's flow afterwards.");
-    		out.newLine();
-    		out.write("spongeSaturation=false");
-    		out.newLine();
-    		out.write("");
-    		out.newLine();
-    		out.write("# Water replacement");
-    		out.newLine();
-    		out.write("#	Can a player place water near a sponge");
-    		out.newLine();
-    		out.write("#	while it is still there?");
-    		out.newLine();
-    		out.write("canPlaceWater=false");
-    		out.newLine();
-    		out.write("");
-    		out.newLine();
-    		out.write("# Craftable Sponges");
-    		out.newLine();
-    		out.write("#	Choose whether players can craft sponges or not.");
-    		out.newLine();
-    		out.write("craftableSponges=true");
-    		out.newLine();
-    		out.write("");
-    		out.newLine();
-    		out.write("# Lava");
-    		out.newLine();
-    		out.write("#	Should lava be affected also? Lava will be treated");
-    		out.newLine();
-    		out.write("#	exactly like water as chosen in previous settings.");
-    		out.newLine();
-    		out.write("lavaToo=false");
-    		out.newLine();
-    		out.write("");
-    		out.newLine();
-    		out.write("# Debug Messages");
-    		out.newLine();
-    		out.write("#	This tends to spam your console, so you'd be best");
-    		out.newLine();
-    		out.write("#	served leaving this off unless you know what");
-    		out.newLine();
-    		out.write("#	you're doing.");
-    		out.newLine();
-    		out.write("debug=false");
+    		out.write("#\n");
+    		out.write("# SpongeRestore Configuration\n");
+    		out.write("#\n");
+    		out.write("\n");
+    		out.write("# Excluded worlds [names separated by commas]\n");
+    		out.write("#	Here you list all the worlds in which you\n");
+    		out.write("#	do not want this plugin to work in.\n");
+    		out.write("excludedWorlds=" + linkedListToString(excludedWorlds) + "\n");
+    		out.write("\n");
+    		out.write("# Sponge saturation [true or false]\n");
+    		out.write("#	Add more realism to sponges by making them only\n");
+    		out.write("#	absorb water from an area without blocking\n");
+    		out.write("#	water's flow afterwards.\n");
+    		out.write("spongeSaturation=" + spongeSaturation + "\n");
+    		out.write("\n");
+    		out.write("# Water replacement\n");
+    		out.write("#	Can a player place water near a sponge\n");
+    		out.write("#	while it is still there?\n");
+    		out.write("canPlaceWater=" + canPlaceWater + "\n");
+    		out.write("\n");
+    		out.write("# Craftable Sponges\n");
+    		out.write("#	Choose whether players can craft sponges or not.\n");
+    		out.write("craftableSponges=" + craftableSponges + "\n");
+    		out.write("\n");
+    		out.write("# Lava\n");
+    		out.write("#	Should lava be affected also? Lava will be treated\n");
+    		out.write("#	exactly like water as chosen in previous settings.\n");
+    		out.write("absorbLava=" + absorbLava + "\n");
+    		out.write("\n");
+    		out.write("# Debug Messages\n");
+    		out.write("#	This tends to spam your console, so you'd be best\n");
+    		out.write("#	served leaving this off unless you know what\n");
+    		out.write("#	you're doing.\n");
+    		out.write("debug=" + debug);
     		out.close();
     	} catch (Exception e) {
     		// Not sure what to do? O.o
