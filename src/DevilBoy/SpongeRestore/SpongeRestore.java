@@ -74,6 +74,7 @@ public class SpongeRestore extends JavaPlugin {
     	if(!pluginSettings.spongeSaturation) {
     		pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, Priority.Normal, this);
     		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
+    		pm.registerEvent(Event.Type.BLOCK_IGNITE, blockListener, Priority.Normal, this);
     	}
     	pm.registerEvent(Event.Type.PLAYER_BUCKET_EMPTY , playerListener, Priority.Normal, this);
     	

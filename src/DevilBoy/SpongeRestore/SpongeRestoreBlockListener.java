@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -48,7 +49,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     					}
     					Block currentBlock = event.getBlock().getRelative(x, y, z);
     					addToSpongeAreas(getBlockCoords(currentBlock));
-    					if (isWater(currentBlock) || (pluginSettings.absorbLava && isLava(currentBlock))) {
+    					if (blockIsAffected(currentBlock)) {
     						currentBlock.setType(Material.AIR);
     						if (plugin.debug) {
     							System.out.println("The sponge absorbed " + currentBlock.getType());
@@ -63,7 +64,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	}
     	
     	// Check if a water block is being placed within sponge's area
-    	if (!pluginSettings.canPlaceWater && ((isWater(involvedBlock) || (pluginSettings.absorbLava && isLava(involvedBlock))) && plugin.spongeAreas.containsKey(getBlockCoords(involvedBlock)))) {
+    	if (!pluginSettings.canPlaceWater && ((blockIsAffected(involvedBlock)) && plugin.spongeAreas.containsKey(getBlockCoords(involvedBlock)))) {
         	involvedBlock.setType(Material.AIR);
         	if(plugin.debug) {
             	System.out.println("You canot put liquid there!! :O");
@@ -80,11 +81,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		if(plugin.debug) {
     			System.out.println("Recede from sponge!");
     		}
-    		if (isLava(event.getBlock())) {
-    			if (pluginSettings.absorbLava) {
-    				event.setCancelled(true);
-    			}
-    		} else if (isWater(event.getBlock())) {
+    		if (blockIsAffected(event.getBlock())) {
     			event.setCancelled(true);
     		}
     	}
@@ -114,6 +111,21 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		}
     		if (!pluginSettings.reduceOverhead) {
     			plugin.saveSpongeData();
+    		}
+    	}
+    }
+    
+    public void onBlockIgnite(BlockIgniteEvent event) {
+    	if(plugin.debug) {
+    		System.out.println("Fire incoming at: " + event.getBlock().getX() + ", " + event.getBlock().getY() + ", " + event.getBlock().getZ());
+    	}
+    	if (pluginSettings.absorbFire) {
+    		if (plugin.spongeAreas.containsKey(getBlockCoords(event.getBlock())) && 
+        			!pluginSettings.excludedWorlds.contains(event.getBlock().getWorld().getName())) {
+        		if(plugin.debug) {
+        			System.out.println("Extinguish fire with sponge!");
+        		}
+        		event.setCancelled(true);
     		}
     	}
     }
@@ -183,10 +195,33 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		return false;
     	}
     }
+    
+    public boolean isFire(Block theBlock) {
+    	if (theBlock.getTypeId() == 51) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
 
 	public void setConfig(Config pluginSettings2) {
 		pluginSettings = pluginSettings2;
 		spongeAreaUpLimit = pluginSettings.spongeRadius + 1;
 	    spongeAreaDownLimit = pluginSettings.spongeRadius * -1;
+	}
+	
+	public boolean blockIsAffected(Block theBlock) {
+		if (isWater(theBlock)) {
+			return true;
+		} else if (isLava(theBlock)) {
+			if (pluginSettings.absorbLava) {
+				return true;
+			}
+		} else if (isFire(theBlock)) {
+			if(pluginSettings.absorbFire) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
