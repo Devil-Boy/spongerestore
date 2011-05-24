@@ -150,7 +150,7 @@ public class Config implements java.io.Serializable {
     		out.write("#\r\n");
     		out.write("\r\n");
     		out.write("# Excluded worlds [names separated by commas]\r\n");
-    		out.write("#	Here you list all the worlds in which you\r]n");
+    		out.write("#	Here you list all the worlds in which you\r\n");
     		out.write("#	do not want this plugin to work in.\r\n");
     		out.write("excludedWorlds=" + linkedListToString(excludedWorlds) + "\r\n");
     		out.write("\r\n");
