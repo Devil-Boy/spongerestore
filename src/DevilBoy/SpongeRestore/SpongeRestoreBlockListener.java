@@ -18,6 +18,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class SpongeRestoreBlockListener extends BlockListener {
     private final SpongeRestore plugin;
     private Config pluginSettings;
+    public int spongeAreaUpLimit = pluginSettings.spongeRadius + 1;
+    public int spongeAreaDownLimit = pluginSettings.spongeRadius * -1;
 
     public SpongeRestoreBlockListener(final SpongeRestore plugin) {
         this.plugin = plugin;
@@ -38,9 +40,9 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		}
     		
     		// Check for water or Lava
-    		for (int x=-2; x<3; x++) {
-    			for (int y=-2; y<3; y++) {
-    				for (int z=-2; z<3; z++) {		
+    		for (int x=spongeAreaDownLimit; x<spongeAreaUpLimit; x++) {
+    			for (int y=spongeAreaDownLimit; y<spongeAreaUpLimit; y++) {
+    				for (int z=spongeAreaDownLimit; z<spongeAreaUpLimit; z++) {		
     					if(plugin.debug) {
     						System.out.println("Checking: " + x + ", " + y + ", " + z);
     					}
@@ -96,9 +98,9 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		}
     		
     		// Check the airea
-    		for (int x=-2; x<3; x++) {
-    			for (int y=-2; y<3; y++) {
-    				for (int z=-2; z<3; z++) {
+    		for (int x=spongeAreaDownLimit; x<spongeAreaUpLimit; x++) {
+    			for (int y=spongeAreaDownLimit; y<spongeAreaUpLimit; y++) {
+    				for (int z=spongeAreaDownLimit; z<spongeAreaUpLimit; z++) {
     					Block currentBlock = wasSponge.getRelative(x, y, z);
     					removeFromSpongeAreas(getBlockCoords(currentBlock));
     					if(plugin.debug) {
@@ -118,9 +120,9 @@ public class SpongeRestoreBlockListener extends BlockListener {
     
     // Old Function
     public boolean isNearSponge(Block originBlock) {
-    	for (int x=-2; x<3; x++) {
-			for (int y=-2; y<3; y++) {
-				for (int z=-2; z<3; z++) {
+    	for (int x=spongeAreaDownLimit; x<spongeAreaUpLimit; x++) {
+			for (int y=spongeAreaDownLimit; y<spongeAreaUpLimit; y++) {
+				for (int z=spongeAreaDownLimit; z<spongeAreaUpLimit; z++) {
 					if(plugin.debug) {
 						System.out.println("SpongeSearching: " + x + ", " + y + ", " + z);
 					}

@@ -25,7 +25,7 @@ public class Config implements java.io.Serializable {
 	boolean absorbLava = false;
 	boolean absorbFire = false;
 	boolean reduceOverhead = false;
-	int spongeRadius = 5;
+	int spongeRadius = 2;
 	
 	public Config(Properties p, final SpongeRestore plugin) throws NoSuchElementException {
         properties = p;
@@ -40,7 +40,7 @@ public class Config implements java.io.Serializable {
         absorbLava = getBoolean("absorbLava", false);
         absorbFire = getBoolean("absorbFire", false);
         reduceOverhead = getBoolean("reduceOverhead", false);
-        spongeRadius = getInt("spongeRadius", 5);
+        spongeRadius = getInt("spongeRadius", 2);
         
     }
 	
@@ -195,7 +195,8 @@ public class Config implements java.io.Serializable {
     		out.write("\r\n");
     		out.write("# Affected Radius\r\n");
     		out.write("#	Here you can choose how large the area the sponge affects\r\n");
-    		out.write("#	will be. For example, setting this to 5 will give you a\r\n");
+    		out.write("#	will be. It is based on the numbers of blocks away from\r\n");
+    		out.write("#	the sponge. For example, setting this to 2 will give you a\r\n");
     		out.write("#	5x5x5 block area. It's recommended that you do not set\r\n");
     		out.write("#	this value to high as the plugin must check every block\r\n");
     		out.write("#	in the set radius.\r\n");
