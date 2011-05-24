@@ -48,8 +48,9 @@ reduceOverhead=false
 
 # Affected Radius
 #	Here you can choose how large the area the sponge affects
-#	will be. For example, setting this to 5 will give you a
+#	will be. It is based on the numbers of blocks away from
+#	the sponge. For example, setting this to 2 will give you a
 #	5x5x5 block area. It's recommended that you do not set
 #	this value to high as the plugin must check every block
 #	in the set radius.
-spongeRadius=5
+spongeRadius=2

@@ -18,8 +18,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class SpongeRestoreBlockListener extends BlockListener {
     private final SpongeRestore plugin;
     private Config pluginSettings;
-    public int spongeAreaUpLimit = pluginSettings.spongeRadius + 1;
-    public int spongeAreaDownLimit = pluginSettings.spongeRadius * -1;
+    public int spongeAreaUpLimit;
+    public int spongeAreaDownLimit;
 
     public SpongeRestoreBlockListener(final SpongeRestore plugin) {
         this.plugin = plugin;
@@ -186,6 +186,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
 
 	public void setConfig(Config pluginSettings2) {
 		pluginSettings = pluginSettings2;
-		
+		spongeAreaUpLimit = pluginSettings.spongeRadius + 1;
+	    spongeAreaDownLimit = pluginSettings.spongeRadius * -1;
 	}
 }
