@@ -25,7 +25,7 @@ public class Config implements java.io.Serializable {
 	boolean absorbLava = false;
 	boolean absorbFire = false;
 	boolean reduceOverhead = false;
-	Integer spongeRadius = 5;
+	int spongeRadius = 5;
 	
 	public Config(Properties p, final SpongeRestore plugin) throws NoSuchElementException {
         properties = p;
