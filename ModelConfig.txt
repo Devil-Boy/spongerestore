@@ -32,3 +32,24 @@ absorbLava=false
 #	served leaving this off unless you know what
 #	you're doing.
 debug=false
+
+# Fire
+#	Should fire be affected too??? It'll get treated
+#	just like the liquids.
+absorbFire=false
+
+# Reduce Overhead
+#	I recommand you keep this off. In normal circumstances
+#	the sponge database is saved on every sponge break
+#	and place, thus keeping the plugin safe for server 
+#	crashes. With this option turned on, the sponge database
+#	will only be saved on plugin disable (clean exits).
+reduceOverhead=false
+
+# Affected Radius
+#	Here you can choose how large the area the sponge affects
+#	will be. For example, setting this to 5 will give you a
+#	5x5x5 block area. It's recommended that you do not set
+#	this value to high as the plugin must check every block
+#	in the set radius.
+spongeRadius=5

@@ -23,6 +23,9 @@ public class Config implements java.io.Serializable {
 	boolean debug = false;
 	boolean craftableSponges = true;
 	boolean absorbLava = false;
+	boolean absorbFire = false;
+	boolean reduceOverhead = false;
+	int spongeRadius = 5;
 	
 	public Config(Properties p, final SpongeRestore plugin) throws NoSuchElementException {
         properties = p;
@@ -35,12 +38,20 @@ public class Config implements java.io.Serializable {
         debug = getBoolean("debug", false);
         craftableSponges = getBoolean("craftableSponges", true);
         absorbLava = getBoolean("absorbLava", false);
+        absorbFire = getBoolean("absorbFire", false);
+        reduceOverhead = getBoolean("reduceOverhead", false);
+        spongeRadius = getInt("absorbFire", 5);
         
     }
 	
-	public int getInt(String label) throws NoSuchElementException {
-        String value = getString(label);
-        return Integer.parseInt(value);
+	public int getInt(String label, int thedefault) throws NoSuchElementException {
+		String value;
+        try {
+        	value = getString(label);
+        	return Integer.parseInt(value);
+        }catch (NoSuchElementException e) {
+        	return thedefault;
+        }
     }
     
     public double getDouble(String label) throws NoSuchElementException {
@@ -167,7 +178,28 @@ public class Config implements java.io.Serializable {
     		out.write("#	This tends to spam your console, so you'd be best\r\n");
     		out.write("#	served leaving this off unless you know what\r\n");
     		out.write("#	you're doing.\r\n");
-    		out.write("debug=" + debug);
+    		out.write("debug=" + debug + "\r\n");
+    		out.write("\r\n");
+    		out.write("# Fire\r\n");
+    		out.write("#	Should fire be affected too??? It'll get treated\r\n");
+    		out.write("#	just like the liquids.\r\n");
+    		out.write("absorbFire=" + absorbFire + "\r\n");
+    		out.write("\r\n");
+    		out.write("# Reduce Overhead\r\n");
+    		out.write("#	I recommand you keep this off. In normal circumstances\r\n");
+    		out.write("#	the sponge database is saved on every sponge break\r\n");
+    		out.write("#	and place, thus keeping the plugin safe for server\r\n");
+    		out.write("#	crashes. With this option turned on, the sponge database\r\n");
+    		out.write("#	will only be saved on plugin disable (clean exits).\r\n");
+    		out.write("reduceOverhead=" + reduceOverhead +"\r\n");
+    		out.write("\r\n");
+    		out.write("# Affected Radius\r\n");
+    		out.write("#	Here you can choose how large the area the sponge affects\r\n");
+    		out.write("#	will be. For example, setting this to 5 will give you a\r\n");
+    		out.write("#	5x5x5 block area. It's recommended that you do not set\r\n");
+    		out.write("#	this value to high as the plugin must check every block\r\n");
+    		out.write("#	in the set radius.\r\n");
+    		out.write("spongeRadius=" + spongeRadius + "\r\n");
     		out.close();
     	} catch (Exception e) {
     		// Not sure what to do? O.o
