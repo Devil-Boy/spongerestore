@@ -55,7 +55,9 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	    		}
         		}
     		}
-    		plugin.saveSpongeData();
+    		if (!pluginSettings.reduceOverhead) {
+    			plugin.saveSpongeData();
+    		}
     	}
     	
     	// Check if a water block is being placed within sponge's area
@@ -108,7 +110,9 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	    		}
         		}
     		}
-    		plugin.saveSpongeData();
+    		if (!pluginSettings.reduceOverhead) {
+    			plugin.saveSpongeData();
+    		}
     	}
     }
     

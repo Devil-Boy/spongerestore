@@ -25,7 +25,7 @@ public class Config implements java.io.Serializable {
 	boolean absorbLava = false;
 	boolean absorbFire = false;
 	boolean reduceOverhead = false;
-	int spongeRadius = 5;
+	Integer spongeRadius = 5;
 	
 	public Config(Properties p, final SpongeRestore plugin) throws NoSuchElementException {
         properties = p;
@@ -40,11 +40,11 @@ public class Config implements java.io.Serializable {
         absorbLava = getBoolean("absorbLava", false);
         absorbFire = getBoolean("absorbFire", false);
         reduceOverhead = getBoolean("reduceOverhead", false);
-        spongeRadius = getInt("absorbFire", 5);
+        spongeRadius = getInt("spongeRadius", 5);
         
     }
 	
-	public int getInt(String label, int thedefault) throws NoSuchElementException {
+	public int getInt(String label, int thedefault) {
 		String value;
         try {
         	value = getString(label);
