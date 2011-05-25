@@ -15,6 +15,7 @@ import java.util.*;
 public class Config implements java.io.Serializable {
 	private Properties properties;
 	private final SpongeRestore plugin;
+	public boolean upToDate = true;
 	
 	// List of Config Options
 	LinkedList<String> excludedWorlds = new LinkedList<String>();
@@ -120,6 +121,7 @@ public class Config implements java.io.Serializable {
     public String getString(String label) throws NoSuchElementException {
         String value = properties.getProperty(label);
         if (value == null) {
+        	upToDate = false;
             throw new NoSuchElementException("Config did not contain: " + label);
         }
         return value;

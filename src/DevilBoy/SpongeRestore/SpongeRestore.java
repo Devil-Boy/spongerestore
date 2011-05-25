@@ -56,6 +56,10 @@ public class SpongeRestore extends JavaPlugin {
         		preSettings.load(new FileInputStream(new File(pluginConfigLocation)));
         		pluginSettings = new Config(preSettings, this);
         		debug = pluginSettings.debug;
+        		if (!pluginSettings.upToDate) {
+        			pluginSettings.createConfig();
+        			System.out.println("SpongeRestore Configuration updated!");
+        		}
         	} else {
         		pluginSettings = new Config(preSettings, this);
         		pluginSettings.createConfig();
