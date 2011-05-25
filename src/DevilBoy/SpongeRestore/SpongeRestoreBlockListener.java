@@ -4,6 +4,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.Material;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
@@ -120,12 +121,29 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		System.out.println("Fire incoming at: " + event.getBlock().getX() + ", " + event.getBlock().getY() + ", " + event.getBlock().getZ());
     	}
     	if (pluginSettings.absorbFire) {
-    		if (plugin.spongeAreas.containsKey(getBlockCoords(event.getBlock())) && 
-        			!pluginSettings.excludedWorlds.contains(event.getBlock().getWorld().getName())) {
+    		if ((plugin.spongeAreas.containsKey(getBlockCoords(event.getBlock())) || 
+    				isNextToSpongeArea(event.getBlock())) && 
+        				!pluginSettings.excludedWorlds.contains(event.getBlock().getWorld().getName())) {
         		if(plugin.debug) {
         			System.out.println("Extinguish fire with sponge!");
         		}
+        		event.getBlock().setTypeId(0, true);
         		event.setCancelled(true);
+    		}
+    	}
+    }
+    
+    public void onBlockBurn(BlockBurnEvent event) {
+    	if(plugin.debug) {
+    		System.out.println("Block Burning at: " + event.getBlock().getX() + ", " + event.getBlock().getY() + ", " + event.getBlock().getZ());
+    	}
+    	if (pluginSettings.absorbFire) {
+    		if (plugin.spongeAreas.containsKey(getBlockCoords(event.getBlock())) && !pluginSettings.excludedWorlds.contains(event.getBlock().getWorld().getName())) {
+        		if(plugin.debug) {
+        			System.out.println("Sponge never lets a block burn!");
+        		}
+        		event.setCancelled(true);
+        		killSurroundingFire(event.getBlock());
     		}
     	}
     }
@@ -223,5 +241,66 @@ public class SpongeRestoreBlockListener extends BlockListener {
 			}
 		}
 		return false;
+	}
+	
+	public Boolean isNextToSpongeArea(Block theBlock) {
+		if (plugin.spongeAreas.containsKey(getBlockCoords(theBlock.getFace(BlockFace.NORTH)))) {
+			if(plugin.debug) {
+				System.out.println("Fire wont spread north!");
+			}
+			return true;
+		}
+		if (plugin.spongeAreas.containsKey(getBlockCoords(theBlock.getFace(BlockFace.EAST)))) {
+			if(plugin.debug) {
+				System.out.println("Fire wont spread east!");
+			}
+			return true;
+		}
+		if (plugin.spongeAreas.containsKey(getBlockCoords(theBlock.getFace(BlockFace.SOUTH)))) {
+			if(plugin.debug) {
+				System.out.println("Fire wont spread south!");
+			}
+			return true;
+		}
+		if (plugin.spongeAreas.containsKey(getBlockCoords(theBlock.getFace(BlockFace.WEST)))) {
+			if(plugin.debug) {
+				System.out.println("Fire wont spread west!");
+			}
+			return true;
+		}
+		if (plugin.spongeAreas.containsKey(getBlockCoords(theBlock.getFace(BlockFace.UP)))) {
+			if(plugin.debug) {
+				System.out.println("Fire wont spread up!");
+			}
+			return true;
+		}
+		if (plugin.spongeAreas.containsKey(getBlockCoords(theBlock.getFace(BlockFace.DOWN)))) {
+			if(plugin.debug) {
+				System.out.println("Fire wont spread down!");
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	public void killSurroundingFire(Block fireMan) {
+		if (isFire(fireMan.getFace(BlockFace.NORTH))) {
+			fireMan.getFace(BlockFace.NORTH).setTypeId(0, true);
+		}
+		if (isFire(fireMan.getFace(BlockFace.EAST))) {
+			fireMan.getFace(BlockFace.EAST).setTypeId(0, true);
+		}
+		if (isFire(fireMan.getFace(BlockFace.SOUTH))) {
+			fireMan.getFace(BlockFace.SOUTH).setTypeId(0, true);
+		}
+		if (isFire(fireMan.getFace(BlockFace.WEST))) {
+			fireMan.getFace(BlockFace.WEST).setTypeId(0, true);
+		}
+		if (isFire(fireMan.getFace(BlockFace.UP))) {
+			fireMan.getFace(BlockFace.UP).setTypeId(0, true);
+		}
+		if (isFire(fireMan.getFace(BlockFace.DOWN))) {
+			fireMan.getFace(BlockFace.DOWN).setTypeId(0, true);
+		}
 	}
 }

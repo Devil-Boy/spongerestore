@@ -166,7 +166,9 @@ public class Config implements java.io.Serializable {
     		out.write("canPlaceWater=" + canPlaceWater + "\r\n");
     		out.write("\r\n");
     		out.write("# Craftable Sponges\r\n");
-    		out.write("#	Choose whether players can craft sponges or not.\r\n");
+    		out.write("#	Choose whether this plugin lets players craft\r\n");
+    		out.write("#	sponges or not. Useful for if you use anothe\r\n");
+    		out.write("#	plugin to handle crafting recipes.\r\n");
     		out.write("craftableSponges=" + craftableSponges + "\r\n");
     		out.write("\r\n");
     		out.write("# Lava\r\n");

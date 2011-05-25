@@ -19,7 +19,9 @@ spongeSaturation=false
 canPlaceWater=false
 
 # Craftable Sponges
-#	Choose whether players can craft sponges or not.
+#	Choose whether this plugin lets players craft
+#	sponges or not. Useful for if you use another
+#	plugin to handle crafting recipes.
 craftableSponges=true
 
 # Lava
