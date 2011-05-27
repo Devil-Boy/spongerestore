@@ -10,7 +10,10 @@ import java.util.Properties;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.event.Event.Priority;
@@ -18,12 +21,16 @@ import org.bukkit.event.Event;
 import org.bukkit.event.Event.Type;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 
 import DevilBoy.SpongeRestore.Config;
+
+import com.nijiko.permissions.PermissionHandler;
+import com.nijikokun.bukkit.Permissions.Permissions;
 
 /**
  * SpongeRestore for Bukkit
@@ -46,6 +53,7 @@ public class SpongeRestore extends JavaPlugin {
     String spongeRecipeLocation = pluginMainDir + "/SpongeRecipe.cfg";
     String spongeDbLocation = pluginMainDir + "/spongeAreas.dat";
 	public boolean debug = false;
+	private static PermissionHandler Permissions;
 
     public void onEnable() {
         spongeAreas = loadSpongeData();
@@ -103,7 +111,10 @@ public class SpongeRestore extends JavaPlugin {
     	if (pluginSettings.craftableSponges) {
 	        getServer().addRecipe(pluginSettings.spongeRecipe);
     	}
-
+    	
+    	// Permissions turn on!
+    	setupPermissions();
+    	
         // EXAMPLE: Custom code, here we just output some info so we can check all is well
         PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
@@ -154,6 +165,81 @@ public class SpongeRestore extends JavaPlugin {
     		e.printStackTrace();
     	}
 		return spongeAreas;
+    }
+    
+    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+    	if(cmd.getName().equalsIgnoreCase("sponge") || cmd.getName().equalsIgnoreCase("sponges")) {
+    		if (sender instanceof Player) {
+    			Player player = (Player)sender;
+    			if(hasPermissions(player, "SpongeRestore.set")) {
+    				if (args.length <2) {
+    					if (args.length <1) {
+    						args = new String[] {"", ""};
+    					}
+    					args = new String[] {args[0], ""};
+    				}
+    				if (debug) {
+    					System.out.println(player + " used /" + cmd.getName() + " " + args[0] + " " + args[1]);
+    				}
+    				if (args[0].equalsIgnoreCase("enable")) {
+    					if (args[1].equalsIgnoreCase("target") || args[1].equalsIgnoreCase("this") || args[1].equalsIgnoreCase("one")) {
+    						if (blockListener.enableSponge(player.getTargetBlock(null, 100))) {
+    							player.sendMessage(ChatColor.GREEN + "Successfully enabled sponge!");
+    						} else {
+    							player.sendMessage(ChatColor.GREEN + "That is not a sponge.");
+    						}
+    					} else if (args[1].equalsIgnoreCase("all")) {
+    						// TODO: Find all sponges in world.
+    						player.sendMessage(ChatColor.GREEN + "Haven't figured this function out yet...");
+    					} else {
+    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " enable <target/all>");
+    						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable just the sponge you're looking at, are all sponges in the world.");
+    					}
+    				} else if (args[0].equalsIgnoreCase("disable")) {
+    					if (args[1].equalsIgnoreCase("target") || args[1].equalsIgnoreCase("this") || args[1].equalsIgnoreCase("one")) {
+    						if (blockListener.disableSponge(player.getTargetBlock(null, 100))) {
+    							player.sendMessage(ChatColor.GREEN + "Successfully disabled sponge!");
+    						} else {
+    							player.sendMessage(ChatColor.GREEN + "That is not a sponge.");
+    						}
+    					} else if (args[1].equalsIgnoreCase("all")) {
+    						// TODO: Find all sponges in world.
+    						player.sendMessage(ChatColor.GREEN + "Haven't figured this function out yet...");
+    					} else {
+    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " disable <target/all>");
+    						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to disable just the sponge you're looking at, are all sponges in the world.");
+    					}
+    				} else {
+    					player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " <enable/disable> <target/all>");
+						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable or disable sponges.");
+    				}
+    				
+    			} else {
+    				player.sendMessage(ChatColor.GREEN + "You do not have permission to use this command.");
+    			}
+    		}
+    		return true;
+    	}
+    	return false;
+    }
+    
+    private void setupPermissions() {
+        Plugin permissions = this.getServer().getPluginManager().getPlugin("Permissions");
+
+        if (Permissions == null) {
+            if (permissions != null) {
+                Permissions = ((Permissions)permissions).getHandler();
+            } else {
+            }
+        }
+    }
+    
+    public static boolean hasPermissions(Player player, String node) {
+        if (Permissions != null) {
+            return Permissions.has(player, node);
+        } else {
+            return player.isOp();
+        }
     }
     
 }

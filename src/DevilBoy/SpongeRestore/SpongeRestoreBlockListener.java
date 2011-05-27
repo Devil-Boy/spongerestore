@@ -301,4 +301,61 @@ public class SpongeRestoreBlockListener extends BlockListener {
 			fireMan.getFace(BlockFace.DOWN).setTypeId(0, true);
 		}
 	}
+	
+	public boolean enableSponge(Block spongeBlock) {
+    	String theWorld = spongeBlock.getWorld().getName();
+    	// Check if the block is a Sponge
+    	if (isSponge(spongeBlock) && !pluginSettings.excludedWorlds.contains(theWorld)) {
+    		// Check for water or Lava
+    		for (int x=spongeAreaDownLimit; x<spongeAreaUpLimit; x++) {
+    			for (int y=spongeAreaDownLimit; y<spongeAreaUpLimit; y++) {
+    				for (int z=spongeAreaDownLimit; z<spongeAreaUpLimit; z++) {		
+    					if(plugin.debug) {
+    						System.out.println("Checking: " + x + ", " + y + ", " + z);
+    					}
+    					Block currentBlock = spongeBlock.getRelative(x, y, z);
+    					addToSpongeAreas(getBlockCoords(currentBlock));
+    					if (blockIsAffected(currentBlock)) {
+    						currentBlock.setType(Material.AIR);
+    						if (plugin.debug) {
+    							System.out.println("The sponge absorbed " + currentBlock.getType());
+    						}
+    					}
+    	    		}
+        		}
+    		}
+    		if (!pluginSettings.reduceOverhead) {
+    			plugin.saveSpongeData();
+    		}
+    		return true;
+    	} else {
+    		return false;
+    	}
+	}
+	
+	public boolean disableSponge(Block theSponge) {
+    	if (isSponge(theSponge)) {
+    		// Check the airea
+    		for (int x=spongeAreaDownLimit; x<spongeAreaUpLimit; x++) {
+    			for (int y=spongeAreaDownLimit; y<spongeAreaUpLimit; y++) {
+    				for (int z=spongeAreaDownLimit; z<spongeAreaUpLimit; z++) {
+    					Block currentBlock = theSponge.getRelative(x, y, z);
+    					removeFromSpongeAreas(getBlockCoords(currentBlock));
+    					if(plugin.debug) {
+    						System.out.println("AirSearching: " + x + ", " + y + ", " + z);
+    					}
+    					if (currentBlock.getType() == Material.AIR) {
+    						currentBlock.setTypeId(0, true); // Turn air into air.
+    					}
+    	    		}
+        		}
+    		}
+    		if (!pluginSettings.reduceOverhead) {
+    			plugin.saveSpongeData();
+    		}
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
 }
