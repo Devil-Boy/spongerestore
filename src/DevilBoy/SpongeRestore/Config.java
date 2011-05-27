@@ -168,47 +168,47 @@ public class Config implements java.io.Serializable {
     	ShapedRecipe preRecipe = new ShapedRecipe(new ItemStack(19, 1));
     	preRecipe.shape(topRow, middleRow, bottomRow);
     	try {
-    		preRecipe.setIngredient('A', Material.valueOf(getString("a")));
+    		preRecipe.setIngredient('A', Material.valueOf(getString("a").toUpperCase()));
     	} catch (Exception e) {
     		topRow.replace("A", " ");
     	}
     	try {
-    		preRecipe.setIngredient('B', Material.valueOf(getString("b")));
+    		preRecipe.setIngredient('B', Material.valueOf(getString("b").toUpperCase()));
     	} catch (Exception e) {
     		topRow.replace("B", " ");
     	}
     	try {
-    		preRecipe.setIngredient('C', Material.valueOf(getString("c")));
+    		preRecipe.setIngredient('C', Material.valueOf(getString("c").toUpperCase()));
     	} catch (Exception e) {
     		topRow.replace("C", " ");
     	}
     	try {
-    		preRecipe.setIngredient('D', Material.valueOf(getString("d")));
+    		preRecipe.setIngredient('D', Material.valueOf(getString("d").toUpperCase()));
     	} catch (Exception e) {
     		topRow.replace("D", " ");
     	}
     	try {
-    		preRecipe.setIngredient('E', Material.valueOf(getString("e")));
+    		preRecipe.setIngredient('E', Material.valueOf(getString("e").toUpperCase()));
     	} catch (Exception e) {
     		topRow.replace("E", " ");
     	}
     	try {
-    		preRecipe.setIngredient('F', Material.valueOf(getString("f")));
+    		preRecipe.setIngredient('F', Material.valueOf(getString("f").toUpperCase()));
     	} catch (Exception e) {
     		topRow.replace("F", " ");
     	}
     	try {
-    		preRecipe.setIngredient('G', Material.valueOf(getString("g")));
+    		preRecipe.setIngredient('G', Material.valueOf(getString("g").toUpperCase()));
     	} catch (Exception e) {
     		topRow.replace("G", " ");
     	}
     	try {
-    		preRecipe.setIngredient('H', Material.valueOf(getString("h")));
+    		preRecipe.setIngredient('H', Material.valueOf(getString("h").toUpperCase()));
     	} catch (Exception e) {
     		topRow.replace("H", " ");
     	}
     	try {
-    		preRecipe.setIngredient('I', Material.valueOf(getString("i")));
+    		preRecipe.setIngredient('I', Material.valueOf(getString("i").toUpperCase()));
     	} catch (Exception e) {
     		topRow.replace("I", " ");
     	}
@@ -295,7 +295,7 @@ public class Config implements java.io.Serializable {
     		out.write("# leave the value blank.\r\n");
     		out.write("# You can get the list of material names from:\r\n");
     		out.write("# http://jd.bukkit.org/apidocs/org/bukkit/Material.html\r\n");
-    		out.write("# Remember that thses are case-sensitive.\r\n");
+    		out.write("# Remember that you must put the exact names.\r\n");
     		out.write("\r\n");
     		out.write("# a b c\r\n");
     		out.write("# d e f\r\n");

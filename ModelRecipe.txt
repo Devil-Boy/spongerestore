@@ -7,7 +7,7 @@
 # leave the value blank.
 # You can get the list of material names from:
 # http://jd.bukkit.org/apidocs/org/bukkit/Material.html
-# Remember that these are case-sensitive.
+# Remember that you must put the exact names.
 
 # a b c
 # d e f
