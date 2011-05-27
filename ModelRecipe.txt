@@ -1,0 +1,26 @@
+#
+# SpongeRestore crafting recipe configuration
+#
+
+# Choose your materials according to the
+# diagram below.To indicate an empty slot
+# leave the value blank.
+# You can get the list of material names from:
+# http://jd.bukkit.org/apidocs/org/bukkit/Material.html
+# Remember that these are case-sensitive.
+
+# a b c
+# d e f
+# g h i
+
+a=SAND
+b=STRING
+c=SAND
+
+d=STRING
+e=SAND
+f=STRING
+
+g=SAND
+h=STRING
+i=SAND

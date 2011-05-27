@@ -7,6 +7,10 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.*;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
+
 /**
  * Editable configuration class (user input)
  * @author DevilBoy
@@ -28,9 +32,18 @@ public class Config implements java.io.Serializable {
 	boolean reduceOverhead = false;
 	int spongeRadius = 2;
 	
-	public Config(Properties p, final SpongeRestore plugin) throws NoSuchElementException {
+	// The Sponge Crafting Recipe
+	ShapedRecipe spongeRecipe;
+	
+	public Config(Properties p, final SpongeRestore plugin, boolean customRecipe) throws NoSuchElementException {
         properties = p;
         this.plugin = plugin;
+        
+        // Sponge Recipe Default
+        spongeRecipe = new ShapedRecipe(new ItemStack(19, 1));
+    	spongeRecipe.shape("SXS","XSX","SXS");
+    	spongeRecipe.setIngredient('S', Material.SAND);
+    	spongeRecipe.setIngredient('X', Material.STRING);
         
         // Grab values here.
         excludedWorlds = getList("excludedWorlds", "");
@@ -42,6 +55,10 @@ public class Config implements java.io.Serializable {
         absorbFire = getBoolean("absorbFire", false);
         reduceOverhead = getBoolean("reduceOverhead", false);
         spongeRadius = getInt("spongeRadius", 2);
+        
+        if (customRecipe) {
+        	spongeRecipe = getRecipe();
+        }
         
     }
 	
@@ -144,6 +161,61 @@ public class Config implements java.io.Serializable {
     	return "";
     }
     
+    public ShapedRecipe getRecipe() {
+    	String topRow = "ABC";
+    	String middleRow = "DEF";
+    	String bottomRow = "GHI";
+    	ShapedRecipe preRecipe = new ShapedRecipe(new ItemStack(19, 1));
+    	preRecipe.shape(topRow, middleRow, bottomRow);
+    	try {
+    		preRecipe.setIngredient('A', Material.valueOf(getString("a")));
+    	} catch (Exception e) {
+    		topRow.replace("A", " ");
+    	}
+    	try {
+    		preRecipe.setIngredient('B', Material.valueOf(getString("b")));
+    	} catch (Exception e) {
+    		topRow.replace("B", " ");
+    	}
+    	try {
+    		preRecipe.setIngredient('C', Material.valueOf(getString("c")));
+    	} catch (Exception e) {
+    		topRow.replace("C", " ");
+    	}
+    	try {
+    		preRecipe.setIngredient('D', Material.valueOf(getString("d")));
+    	} catch (Exception e) {
+    		topRow.replace("D", " ");
+    	}
+    	try {
+    		preRecipe.setIngredient('E', Material.valueOf(getString("e")));
+    	} catch (Exception e) {
+    		topRow.replace("E", " ");
+    	}
+    	try {
+    		preRecipe.setIngredient('F', Material.valueOf(getString("f")));
+    	} catch (Exception e) {
+    		topRow.replace("F", " ");
+    	}
+    	try {
+    		preRecipe.setIngredient('G', Material.valueOf(getString("g")));
+    	} catch (Exception e) {
+    		topRow.replace("G", " ");
+    	}
+    	try {
+    		preRecipe.setIngredient('H', Material.valueOf(getString("h")));
+    	} catch (Exception e) {
+    		topRow.replace("H", " ");
+    	}
+    	try {
+    		preRecipe.setIngredient('I', Material.valueOf(getString("i")));
+    	} catch (Exception e) {
+    		topRow.replace("I", " ");
+    	}
+    	preRecipe.shape(topRow, middleRow, bottomRow);
+    	return preRecipe;
+    }
+    
     public void createConfig() {
     	try{
     		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(plugin.pluginConfigLocation)));
@@ -208,6 +280,41 @@ public class Config implements java.io.Serializable {
     		out.close();
     	} catch (Exception e) {
     		// Not sure what to do? O.o
+    	}
+    }
+    
+    public void createRecipeConfig() {
+    	try{
+    		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(plugin.spongeRecipeLocation)));
+    		out.write("#\r\n");
+    		out.write("# SpongeRestore crafting recipe configuration\r\n");
+    		out.write("#\r\n");
+    		out.write("\r\n");
+    		out.write("# Choose your materials according to the\r\n");
+    		out.write("# diagram below.To indicate an empty slot\r\n");
+    		out.write("# leave the value blank.\r\n");
+    		out.write("# You can get the list of material names from:\r\n");
+    		out.write("# http://jd.bukkit.org/apidocs/org/bukkit/Material.html\r\n");
+    		out.write("# Remember that thses are case-sensitive.\r\n");
+    		out.write("\r\n");
+    		out.write("# a b c\r\n");
+    		out.write("# d e f\r\n");
+    		out.write("# g h i\r\n");
+    		out.write("\r\n");
+    		out.write("a=SAND\r\n");
+    		out.write("b=STRING\r\n");
+    		out.write("c=SAND\r\n");
+    		out.write("\r\n");
+    		out.write("d=STRING\r\n");
+    		out.write("e=SAND\r\n");
+    		out.write("f=STRING\r\n");
+    		out.write("\r\n");
+    		out.write("g=SAND\r\n");
+    		out.write("h=STRING\r\n");
+    		out.write("i=SAND\r\n");
+    		out.close();
+    	} catch (Exception e) {
+    		// You somehow failed?
     	}
     }
 }

@@ -43,6 +43,7 @@ public class SpongeRestore extends JavaPlugin {
     public HashMap<String, Integer> spongeAreas = new HashMap<String, Integer>();
     String pluginMainDir = "./plugins/SpongeRestore";
     String pluginConfigLocation = pluginMainDir + "/SpongeRestore.cfg";
+    String spongeRecipeLocation = pluginMainDir + "/SpongeRecipe.cfg";
     String spongeDbLocation = pluginMainDir + "/spongeAreas.dat";
 	public boolean debug = false;
 
@@ -54,20 +55,35 @@ public class SpongeRestore extends JavaPlugin {
         	Properties preSettings = new Properties();
         	if ((new File(pluginConfigLocation)).exists()) {
         		preSettings.load(new FileInputStream(new File(pluginConfigLocation)));
-        		pluginSettings = new Config(preSettings, this);
+        		if ((new File(spongeRecipeLocation)).exists()) {
+        			preSettings.load(new FileInputStream(new File(spongeRecipeLocation)));
+        			pluginSettings = new Config(preSettings, this, true);
+        		} else {
+        			pluginSettings = new Config(preSettings, this, false);
+        			pluginSettings.createRecipeConfig();
+        			System.out.println("SpongeRecipe created!");
+        		}
         		debug = pluginSettings.debug;
         		if (!pluginSettings.upToDate) {
         			pluginSettings.createConfig();
         			System.out.println("SpongeRestore Configuration updated!");
         		}
         	} else {
-        		pluginSettings = new Config(preSettings, this);
+        		if ((new File(spongeRecipeLocation)).exists()) {
+        			preSettings.load(new FileInputStream(new File(spongeRecipeLocation)));
+        			pluginSettings = new Config(preSettings, this, true);
+        		} else {
+        			pluginSettings = new Config(preSettings, this, false);
+        			pluginSettings.createRecipeConfig();
+        			System.out.println("SpongeRecipe created!");
+        		}
         		pluginSettings.createConfig();
         		System.out.println("SpongeRestore Configuration created!");
         	}
         } catch (Exception e) {
         	System.out.println("Could not load configuration! " + e);
         }
+        
         blockListener.setConfig(pluginSettings);
         playerListener.setConfig(pluginSettings);
         // Register our events
@@ -85,11 +101,7 @@ public class SpongeRestore extends JavaPlugin {
     	
     	// Adding sponge recipe
     	if (pluginSettings.craftableSponges) {
-	    	ShapedRecipe spongerecipie = new ShapedRecipe(new ItemStack(19, 1));
-	        spongerecipie.shape("SXS","XSX","SXS");
-	        spongerecipie.setIngredient('S', Material.SAND);
-	        spongerecipie.setIngredient('X', Material.STRING);
-	        getServer().addRecipe(spongerecipie);
+	        getServer().addRecipe(pluginSettings.spongeRecipe);
     	}
 
         // EXAMPLE: Custom code, here we just output some info so we can check all is well
