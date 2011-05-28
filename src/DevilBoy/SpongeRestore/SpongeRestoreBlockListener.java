@@ -2,7 +2,10 @@ package DevilBoy.SpongeRestore;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockCanBuildEvent;
@@ -358,4 +361,33 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		return false;
     	}
     }
+	
+	public void convertLoadedSponges(World theWorld, boolean enable) {
+		Chunk[] theChunks = theWorld.getLoadedChunks();
+		for (int cl=0; cl<theChunks.length; cl++) {
+			if(plugin.debug) {
+				System.out.println("Checking chunk: " + cl);
+			}
+			for (int x=1; x<17; x++) {
+				for (int y=1; y<17; y++) {
+					for (int z=1; z<129; z++) {
+						if(plugin.debug) {
+    						System.out.println("Checking block at: " + x + ", " + y + ", " + z);
+    					}
+						Block currentBlock = theChunks[cl].getBlock(x, y, z);
+						if (isSponge(currentBlock)) {
+							if(plugin.debug) {
+								System.out.println("Sponge found at: " + getBlockCoords(currentBlock));
+							}
+							if (enable) {
+								enableSponge(currentBlock);
+							} else {
+								disableSponge(currentBlock);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }

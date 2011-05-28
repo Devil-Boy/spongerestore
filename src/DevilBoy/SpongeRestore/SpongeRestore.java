@@ -189,11 +189,11 @@ public class SpongeRestore extends JavaPlugin {
     							player.sendMessage(ChatColor.GREEN + "That is not a sponge.");
     						}
     					} else if (args[1].equalsIgnoreCase("all")) {
-    						// TODO: Find all sponges in world.
-    						player.sendMessage(ChatColor.GREEN + "Haven't figured this function out yet...");
+    						// blockListener.convertLoadedSponges(player.getWorld(), true);
+    						player.sendMessage(ChatColor.GREEN + "This command has been removed for your own safety.");
     					} else {
     						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " enable <target/all>");
-    						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable just the sponge you're looking at, are all sponges in the world.");
+    						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable just the sponge you're looking at, or all sponges in loaded chunks.");
     					}
     				} else if (args[0].equalsIgnoreCase("disable")) {
     					if (args[1].equalsIgnoreCase("target") || args[1].equalsIgnoreCase("this") || args[1].equalsIgnoreCase("one")) {
@@ -203,11 +203,11 @@ public class SpongeRestore extends JavaPlugin {
     							player.sendMessage(ChatColor.GREEN + "That is not a sponge.");
     						}
     					} else if (args[1].equalsIgnoreCase("all")) {
-    						// TODO: Find all sponges in world.
-    						player.sendMessage(ChatColor.GREEN + "Haven't figured this function out yet...");
+    						// blockListener.convertLoadedSponges(player.getWorld(), false);
+    						player.sendMessage(ChatColor.GREEN + "This command has been removed for your own safety.");
     					} else {
     						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " disable <target/all>");
-    						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to disable just the sponge you're looking at, are all sponges in the world.");
+    						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to disable just the sponge you're looking at, or all sponges in loaded chunks.");
     					}
     				} else {
     					player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " <enable/disable> <target/all>");
