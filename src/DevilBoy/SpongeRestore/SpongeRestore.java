@@ -183,7 +183,8 @@ public class SpongeRestore extends JavaPlugin {
     				}
     				if (args[0].equalsIgnoreCase("enable")) {
     					if (args[1].equalsIgnoreCase("target") || args[1].equalsIgnoreCase("this") || args[1].equalsIgnoreCase("one")) {
-    						if (blockListener.enableSponge(player.getTargetBlock(null, 100))) {
+    						if (blockListener.disableSponge(player.getTargetBlock(blockListener.transparentBlocks, 100))) {
+    							blockListener.enableSponge(player.getTargetBlock(blockListener.transparentBlocks, 100));
     							player.sendMessage(ChatColor.GREEN + "Successfully enabled sponge!");
     						} else {
     							player.sendMessage(ChatColor.GREEN + "That is not a sponge.");
@@ -191,6 +192,7 @@ public class SpongeRestore extends JavaPlugin {
     					} else if (args[1].equalsIgnoreCase("radius")) {
     						if (args.length >2) {
     							try {
+    								blockListener.convertAreaSponges(player, Integer.parseInt(args[2]), false);
     								player.sendMessage(ChatColor.GREEN + "Sponges enabled: " + blockListener.convertAreaSponges(player, Integer.parseInt(args[2]), true));
     							} catch (NumberFormatException e) {
     								player.sendMessage(ChatColor.GREEN + "The radius must be a number.");
@@ -204,7 +206,7 @@ public class SpongeRestore extends JavaPlugin {
     					}
     				} else if (args[0].equalsIgnoreCase("disable")) {
     					if (args[1].equalsIgnoreCase("target") || args[1].equalsIgnoreCase("this") || args[1].equalsIgnoreCase("one")) {
-    						if (blockListener.disableSponge(player.getTargetBlock(null, 100))) {
+    						if (blockListener.disableSponge(player.getTargetBlock(blockListener.transparentBlocks, 100))) {
     							player.sendMessage(ChatColor.GREEN + "Successfully disabled sponge!");
     						} else {
     							player.sendMessage(ChatColor.GREEN + "That is not a sponge.");

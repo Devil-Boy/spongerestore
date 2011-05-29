@@ -1,5 +1,7 @@
 package DevilBoy.SpongeRestore;
 
+import java.util.HashSet;
+
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -26,10 +28,16 @@ public class SpongeRestoreBlockListener extends BlockListener {
     private Config pluginSettings;
     public int spongeAreaUpLimit;
     public int spongeAreaDownLimit;
+    public HashSet<Byte> transparentBlocks = new HashSet<Byte>();
 
     public SpongeRestoreBlockListener(final SpongeRestore plugin) {
         this.plugin = plugin;
         pluginSettings = plugin.pluginSettings;
+        
+        //Setting transparent blocks.
+        transparentBlocks.add((byte) 0);
+        transparentBlocks.add((byte) 8);
+        transparentBlocks.add((byte) 9);
     }
 
     // Catch the events!
@@ -357,6 +365,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     						System.out.println("AirSearching: " + x + ", " + y + ", " + z);
     					}
     					if (isAir(currentBlock)) {
+    						currentBlock.setTypeId(90, true);
     						currentBlock.setTypeId(0, true); // Turn air into air.
     					}
     	    		}
