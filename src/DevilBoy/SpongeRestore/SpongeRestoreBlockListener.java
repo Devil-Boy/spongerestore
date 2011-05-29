@@ -35,9 +35,12 @@ public class SpongeRestoreBlockListener extends BlockListener {
         pluginSettings = plugin.pluginSettings;
         
         //Setting transparent blocks.
-        transparentBlocks.add((byte) 0);
-        transparentBlocks.add((byte) 8);
-        transparentBlocks.add((byte) 9);
+        transparentBlocks.add((byte) 0); // Air
+        transparentBlocks.add((byte) 8); // Water
+        transparentBlocks.add((byte) 9); // Stationary Water
+        transparentBlocks.add((byte) 65); // Ladder
+        transparentBlocks.add((byte) 66); // Rail
+        transparentBlocks.add((byte) 78); // Snow
     }
 
     // Catch the events!
@@ -101,8 +104,8 @@ public class SpongeRestoreBlockListener extends BlockListener {
     }
     
     public void onBlockBreak(BlockBreakEvent event) {
-    	Block wasSponge = event.getBlock();
-    	if (isSponge(wasSponge)) {
+    	Block wasBlock = event.getBlock();
+    	if (isSponge(wasBlock)) {
     		if(plugin.debug) {
     			System.out.println("Sponge destroyed!");
     		}
@@ -111,7 +114,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		for (int x=spongeAreaDownLimit; x<spongeAreaUpLimit; x++) {
     			for (int y=spongeAreaDownLimit; y<spongeAreaUpLimit; y++) {
     				for (int z=spongeAreaDownLimit; z<spongeAreaUpLimit; z++) {
-    					Block currentBlock = wasSponge.getRelative(x, y, z);
+    					Block currentBlock = wasBlock.getRelative(x, y, z);
     					removeFromSpongeAreas(getBlockCoords(currentBlock));
     					if(plugin.debug) {
     						System.out.println("AirSearching: " + x + ", " + y + ", " + z);
@@ -125,6 +128,17 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		if (!pluginSettings.reduceOverhead) {
     			plugin.saveSpongeData();
     		}
+    	} else if (isIce(wasBlock)) {
+    		if(plugin.debug) {
+    			System.out.println("Ice destroyed!");
+    		}
+    		// Check if the ice was within a sponge's area.
+        	if (!pluginSettings.canPlaceWater && plugin.spongeAreas.containsKey(getBlockCoords(wasBlock))) {
+            	wasBlock.setType(Material.AIR);
+            	if(plugin.debug) {
+                	System.out.println("Melted ice gone now :D");
+            	}
+        	}
     	}
     }
     
@@ -234,6 +248,14 @@ public class SpongeRestoreBlockListener extends BlockListener {
     
     public boolean isAir(Block theBlock) {
     	if (theBlock.getType() == Material.AIR) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
+    public boolean isIce(Block theBlock) {
+    	if (theBlock.getType() == Material.ICE) {
     		return true;
     	} else {
     		return false;
