@@ -172,12 +172,12 @@ public class SpongeRestore extends JavaPlugin {
     		if (sender instanceof Player) {
     			Player player = (Player)sender;
     			if(hasPermissions(player, "SpongeRestore.set")) {
-    				if (args.length <2) {
-    					if (args.length <1) {
-    						args = new String[] {"", ""};
-    					}
-    					args = new String[] {args[0], ""};
-    				}
+	    			if (args.length <2) {
+	    				if (args.length <1) {
+	    					args = new String[] {"", "", ""};
+	    				}
+	    				args = new String[] {args[0], "", ""};
+	    			}
     				if (debug) {
     					System.out.println(player + " used /" + cmd.getName() + " " + args[0] + " " + args[1]);
     				}
@@ -188,19 +188,18 @@ public class SpongeRestore extends JavaPlugin {
     						} else {
     							player.sendMessage(ChatColor.GREEN + "That is not a sponge.");
     						}
-    					} else if (args[1].startsWith("radius")) {
-    						String[] separatedArg = args[1].split(":");
-    						if (separatedArg.length > 1) {
+    					} else if (args[1].equalsIgnoreCase("radius")) {
+    						if (args.length >2) {
     							try {
-    								player.sendMessage(ChatColor.GREEN + "Sponges enabled: " + blockListener.convertAreaSponges(player, Integer.parseInt(separatedArg[1]), true));
+    								player.sendMessage(ChatColor.GREEN + "Sponges enabled: " + blockListener.convertAreaSponges(player, Integer.parseInt(args[2]), true));
     							} catch (NumberFormatException e) {
     								player.sendMessage(ChatColor.GREEN + "The radius must be a number.");
     							}
     						} else {
-    							player.sendMessage(ChatColor.GREEN + "You must specify the radius. For example: /" + cmd.getName() + " enable redius:5");
+    							player.sendMessage(ChatColor.GREEN + "You must specify the radius. For example: /" + cmd.getName() + " enable radius 5");
     						}
     					} else {
-    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " enable <target/radius:#>");
+    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " enable <target/radius #>");
     						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable just the sponge you're looking at, or all sponges within a certain radius.");
     					}
     				} else if (args[0].equalsIgnoreCase("disable")) {
@@ -211,22 +210,21 @@ public class SpongeRestore extends JavaPlugin {
     							player.sendMessage(ChatColor.GREEN + "That is not a sponge.");
     						}
     					} else if (args[1].startsWith("radius")) {
-    						String[] separatedArg = args[1].split(":");
-    						if (separatedArg.length > 1) {
+    						if (args.length >2) {
     							try {
-    								player.sendMessage(ChatColor.GREEN + "Sponges disabled: " + blockListener.convertAreaSponges(player, Integer.parseInt(separatedArg[1]), false));
+    								player.sendMessage(ChatColor.GREEN + "Sponges disabled: " + blockListener.convertAreaSponges(player, Integer.parseInt(args[2]), false));
     							} catch (NumberFormatException e) {
     								player.sendMessage(ChatColor.GREEN + "The radius must be a number.");
     							}
     						} else {
-    							player.sendMessage(ChatColor.GREEN + "You must specify the radius. For example: /" + cmd.getName() + " disable redius:5");
+    							player.sendMessage(ChatColor.GREEN + "You must specify the radius. For example: /" + cmd.getName() + " disable radius 5");
     						}
     					} else {
-    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " disable <target/radius:#>");
+    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " disable <target/radius #>");
     						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable just the sponge you're looking at, or all sponges within a certain radius.");
     					}
     				} else {
-    					player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " <enable/disable> <target/radius:#>");
+    					player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " <enable/disable> <target/radius #>");
 						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable or disable sponges.");
     				}
     				

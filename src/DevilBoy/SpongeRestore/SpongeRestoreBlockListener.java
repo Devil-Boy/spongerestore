@@ -108,7 +108,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     					if(plugin.debug) {
     						System.out.println("AirSearching: " + x + ", " + y + ", " + z);
     					}
-    					if (currentBlock.getType() == Material.AIR) {
+    					if (isAir(currentBlock)) {
     						currentBlock.setTypeId(0, true); // Turn air into air.
     					}
     	    		}
@@ -218,6 +218,14 @@ public class SpongeRestoreBlockListener extends BlockListener {
     
     public boolean isFire(Block theBlock) {
     	if (theBlock.getTypeId() == 51) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
+    public boolean isAir(Block theBlock) {
+    	if (theBlock.getType() == Material.AIR) {
     		return true;
     	} else {
     		return false;
@@ -348,7 +356,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     					if(plugin.debug) {
     						System.out.println("AirSearching: " + x + ", " + y + ", " + z);
     					}
-    					if (currentBlock.getType() == Material.AIR) {
+    					if (isAir(currentBlock)) {
     						currentBlock.setTypeId(0, true); // Turn air into air.
     					}
     	    		}
