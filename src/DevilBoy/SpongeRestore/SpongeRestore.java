@@ -188,9 +188,17 @@ public class SpongeRestore extends JavaPlugin {
     						} else {
     							player.sendMessage(ChatColor.GREEN + "That is not a sponge.");
     						}
-    					} else if (args[1].equalsIgnoreCase("all")) {
-    						// blockListener.convertLoadedSponges(player.getWorld(), true);
-    						player.sendMessage(ChatColor.GREEN + "This command has been removed for your own safety.");
+    					} else if (args[1].startsWith("radius")) {
+    						String[] separatedArg = args[1].split(":");
+    						if (separatedArg.length > 1) {
+    							try {
+    								player.sendMessage(ChatColor.GREEN + "Sponges enabled: " + blockListener.convertAreaSponges(player, Integer.parseInt(separatedArg[1]), true));
+    							} catch (NumberFormatException e) {
+    								player.sendMessage(ChatColor.GREEN + "The radius must be a number.");
+    							}
+    						} else {
+    							player.sendMessage(ChatColor.GREEN + "You must specify the radius. For example: /" + cmd.getName() + " enable redius:5");
+    						}
     					} else {
     						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " enable <target/radius:#>");
     						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable just the sponge you're looking at, or all sponges within a certain radius.");
@@ -202,12 +210,20 @@ public class SpongeRestore extends JavaPlugin {
     						} else {
     							player.sendMessage(ChatColor.GREEN + "That is not a sponge.");
     						}
-    					} else if (args[1].equalsIgnoreCase("all")) {
-    						// blockListener.convertLoadedSponges(player.getWorld(), false);
-    						player.sendMessage(ChatColor.GREEN + "This command has been removed for your own safety.");
+    					} else if (args[1].startsWith("radius")) {
+    						String[] separatedArg = args[1].split(":");
+    						if (separatedArg.length > 1) {
+    							try {
+    								player.sendMessage(ChatColor.GREEN + "Sponges disabled: " + blockListener.convertAreaSponges(player, Integer.parseInt(separatedArg[1]), false));
+    							} catch (NumberFormatException e) {
+    								player.sendMessage(ChatColor.GREEN + "The radius must be a number.");
+    							}
+    						} else {
+    							player.sendMessage(ChatColor.GREEN + "You must specify the radius. For example: /" + cmd.getName() + " disable redius:5");
+    						}
     					} else {
     						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " disable <target/radius:#>");
-    						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to disable just the sponge you're looking at, or all sponges within a certain radius.");
+    						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable just the sponge you're looking at, or all sponges within a certain radius.");
     					}
     				} else {
     					player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " <enable/disable> <target/radius:#>");

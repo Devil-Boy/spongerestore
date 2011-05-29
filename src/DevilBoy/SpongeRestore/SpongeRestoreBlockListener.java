@@ -363,11 +363,11 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	}
     }
 	
-	public void convertAreaSponges(Player thePlayer, int radius, boolean enable) {
+	public int convertAreaSponges(Player thePlayer, int radius, boolean enable) {
 		Block theOrigin = thePlayer.getLocation().getBlock();
 		int checkAreaUpLimit = radius + 1;
 	    int checkAreaDownLimit = radius * -1;
-	    
+	    int spongesConverted = 0;
 		for (int x=checkAreaDownLimit; x<checkAreaUpLimit; x++) {
 			for (int y=checkAreaDownLimit; y<checkAreaUpLimit; y++) {
 				for (int z=checkAreaDownLimit; z<checkAreaUpLimit; z++) {
@@ -381,38 +381,11 @@ public class SpongeRestoreBlockListener extends BlockListener {
 						} else {
 							disableSponge(currentBlock);
 						}
+						spongesConverted++;
 					}
 	    		}
     		}
 		}
-		
-		/* Will totally lag out a server
-		Chunk[] theChunks = theWorld.getLoadedChunks();
-		for (int cl=0; cl<theChunks.length; cl++) {
-			if(plugin.debug) {
-				System.out.println("Checking chunk: " + cl);
-			}
-			for (int x=1; x<17; x++) {
-				for (int y=1; y<17; y++) {
-					for (int z=1; z<129; z++) {
-						if(plugin.debug) {
-    						System.out.println("Checking block at: " + x + ", " + y + ", " + z);
-    					}
-						Block currentBlock = theChunks[cl].getBlock(x, y, z);
-						if (isSponge(currentBlock)) {
-							if(plugin.debug) {
-								System.out.println("Sponge found at: " + getBlockCoords(currentBlock));
-							}
-							if (enable) {
-								enableSponge(currentBlock);
-							} else {
-								disableSponge(currentBlock);
-							}
-						}
-					}
-				}
-			}
-		}
-		*/
+		return spongesConverted;
 	}
 }
