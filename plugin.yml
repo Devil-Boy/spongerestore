@@ -8,7 +8,10 @@ website: http://forums.bukkit.org/threads/fun-mech-spongerestore-v0-9-5-bring-ba
 commands:
    sponge:
       description: Enable or disable sponges!
-      usage: /<command> <enable/disable> <target/all>
+      usage: /<command> <enable/disable> <target/radius:#>
    sponges:
       description: Alternative to "sponge" command.
-      usage: /<command> <enable/disable> <target/all>
+      usage: /<command> <enable/disable> <target/radius:#>
+   sr:
+      description: Alternative to "sponge" command.
+      usage: /<command> <enable/disable> <target/radius:#>

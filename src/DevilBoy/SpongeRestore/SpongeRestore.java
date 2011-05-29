@@ -168,7 +168,7 @@ public class SpongeRestore extends JavaPlugin {
     }
     
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-    	if(cmd.getName().equalsIgnoreCase("sponge") || cmd.getName().equalsIgnoreCase("sponges")) {
+    	if(cmd.getName().equalsIgnoreCase("sponge") || cmd.getName().equalsIgnoreCase("sponges") || cmd.getName().equalsIgnoreCase("sr")) {
     		if (sender instanceof Player) {
     			Player player = (Player)sender;
     			if(hasPermissions(player, "SpongeRestore.set")) {
@@ -192,8 +192,8 @@ public class SpongeRestore extends JavaPlugin {
     						// blockListener.convertLoadedSponges(player.getWorld(), true);
     						player.sendMessage(ChatColor.GREEN + "This command has been removed for your own safety.");
     					} else {
-    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " enable <target/all>");
-    						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable just the sponge you're looking at, or all sponges in loaded chunks.");
+    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " enable <target/radius:#>");
+    						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable just the sponge you're looking at, or all sponges within a certain radius.");
     					}
     				} else if (args[0].equalsIgnoreCase("disable")) {
     					if (args[1].equalsIgnoreCase("target") || args[1].equalsIgnoreCase("this") || args[1].equalsIgnoreCase("one")) {
@@ -206,11 +206,11 @@ public class SpongeRestore extends JavaPlugin {
     						// blockListener.convertLoadedSponges(player.getWorld(), false);
     						player.sendMessage(ChatColor.GREEN + "This command has been removed for your own safety.");
     					} else {
-    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " disable <target/all>");
-    						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to disable just the sponge you're looking at, or all sponges in loaded chunks.");
+    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " disable <target/radius:#>");
+    						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to disable just the sponge you're looking at, or all sponges within a certain radius.");
     					}
     				} else {
-    					player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " <enable/disable> <target/all>");
+    					player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " <enable/disable> <target/radius:#>");
 						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable or disable sponges.");
     				}
     				

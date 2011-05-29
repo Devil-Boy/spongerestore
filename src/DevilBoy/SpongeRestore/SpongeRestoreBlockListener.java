@@ -6,6 +6,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockCanBuildEvent;
@@ -362,7 +363,30 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	}
     }
 	
-	public void convertLoadedSponges(World theWorld, boolean enable) {
+	public void convertAreaSponges(Player thePlayer, int radius, boolean enable) {
+		Block theOrigin = thePlayer.getLocation().getBlock();
+		int checkAreaUpLimit = radius + 1;
+	    int checkAreaDownLimit = radius * -1;
+	    
+		for (int x=checkAreaDownLimit; x<checkAreaUpLimit; x++) {
+			for (int y=checkAreaDownLimit; y<checkAreaUpLimit; y++) {
+				for (int z=checkAreaDownLimit; z<checkAreaUpLimit; z++) {
+					Block currentBlock = theOrigin.getRelative(x, y, z);
+					if (isSponge(currentBlock)) {
+						if(plugin.debug) {
+							System.out.println("Sponge found at: " + getBlockCoords(currentBlock));
+						}
+						if (enable) {
+							enableSponge(currentBlock);
+						} else {
+							disableSponge(currentBlock);
+						}
+					}
+	    		}
+    		}
+		}
+		
+		/* Will totally lag out a server
 		Chunk[] theChunks = theWorld.getLoadedChunks();
 		for (int cl=0; cl<theChunks.length; cl++) {
 			if(plugin.debug) {
@@ -389,5 +413,6 @@ public class SpongeRestoreBlockListener extends BlockListener {
 				}
 			}
 		}
+		*/
 	}
 }
