@@ -172,6 +172,22 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	}
     }
     
+    public void onBlockPhysics(BlockPhysicsEvent event) {
+    	if (event.getChangedType() == Material.WATER || event.getChangedType() == Material.STATIONARY_WATER) {
+    		if(plugin.debug) {
+        		System.out.println("Ice melting at: " + event.getBlock().getX() + ", " + event.getBlock().getY() + ", " + event.getBlock().getZ());
+        	}
+    		if (!pluginSettings.canPlaceWater || isWater(event.getBlock())) {
+    			if (plugin.spongeAreas.containsKey(getBlockCoords(event.getBlock())) && !pluginSettings.excludedWorlds.contains(event.getBlock().getWorld().getName())) {
+            		if(plugin.debug) {
+            			System.out.println("Sneaky ice, you thought you could let water in!");
+            		}
+            		killSurroundingWater(event.getBlock(), true);
+        		}
+    		}
+    	}
+    }
+    
     // Old Function
     public boolean isNearSponge(Block originBlock) {
     	for (int x=spongeAreaDownLimit; x<spongeAreaUpLimit; x++) {
@@ -341,6 +357,94 @@ public class SpongeRestoreBlockListener extends BlockListener {
 		}
 		if (isFire(fireMan.getFace(BlockFace.DOWN))) {
 			fireMan.getFace(BlockFace.DOWN).setTypeId(0, true);
+		}
+	}
+	
+	public void killSurroundingWater(Block waterMan, boolean mustBeInSpongeArea) {
+		Block northBlock = waterMan.getFace(BlockFace.NORTH);
+		Block eastBlock = waterMan.getFace(BlockFace.EAST);
+		Block southBlock = waterMan.getFace(BlockFace.SOUTH);
+		Block westBlock = waterMan.getFace(BlockFace.WEST);
+		Block upBlock = waterMan.getFace(BlockFace.UP);
+		Block downBlock = waterMan.getFace(BlockFace.DOWN);
+		
+		if (isWater(northBlock)) {
+			if (mustBeInSpongeArea) {
+				if (plugin.spongeAreas.containsKey(getBlockCoords(northBlock)) && !pluginSettings.excludedWorlds.contains(northBlock.getWorld().getName())) {
+            		if(plugin.debug) {
+            			System.out.println("Melted ice/water is gone now! :D");
+            		}
+            		northBlock.setTypeId(0);
+        		}
+			} else {
+				northBlock.setTypeId(0, true);
+				System.out.println("Melted ice/water is gone now! :D");
+			}
+		}
+		if (isWater(eastBlock)) {
+			if (mustBeInSpongeArea) {
+				if (plugin.spongeAreas.containsKey(getBlockCoords(eastBlock)) && !pluginSettings.excludedWorlds.contains(eastBlock.getWorld().getName())) {
+            		if(plugin.debug) {
+            			System.out.println("Melted ice/water is gone now! :D");
+            		}
+            		eastBlock.setTypeId(0);
+        		}
+			} else {
+				eastBlock.setTypeId(0, true);
+				System.out.println("Melted ice/water is gone now! :D");
+			}
+		}
+		if (isWater(southBlock)) {
+			if (mustBeInSpongeArea) {
+				if (plugin.spongeAreas.containsKey(getBlockCoords(southBlock)) && !pluginSettings.excludedWorlds.contains(southBlock.getWorld().getName())) {
+            		if(plugin.debug) {
+            			System.out.println("Melted ice/water is gone now! :D");
+            		}
+            		southBlock.setTypeId(0);
+        		}
+			} else {
+				southBlock.setTypeId(0, true);
+				System.out.println("Melted ice/water is gone now! :D");
+			}
+		}
+		if (isWater(westBlock)) {
+			if (mustBeInSpongeArea) {
+				if (plugin.spongeAreas.containsKey(getBlockCoords(westBlock)) && !pluginSettings.excludedWorlds.contains(westBlock.getWorld().getName())) {
+            		if(plugin.debug) {
+            			System.out.println("Melted ice/water is gone now! :D");
+            		}
+            		westBlock.setTypeId(0);
+        		}
+			} else {
+				westBlock.setTypeId(0, true);
+				System.out.println("Melted ice/water is gone now! :D");
+			}
+		}
+		if (isWater(upBlock)) {
+			if (mustBeInSpongeArea) {
+				if (plugin.spongeAreas.containsKey(getBlockCoords(upBlock)) && !pluginSettings.excludedWorlds.contains(upBlock.getWorld().getName())) {
+            		if(plugin.debug) {
+            			System.out.println("Melted ice/water is gone now! :D");
+            		}
+            		upBlock.setTypeId(0);
+        		}
+			} else {
+				upBlock.setTypeId(0, true);
+				System.out.println("Melted ice/water is gone now! :D");
+			}
+		}
+		if (isWater(downBlock)) {
+			if (mustBeInSpongeArea) {
+				if (plugin.spongeAreas.containsKey(getBlockCoords(downBlock)) && !pluginSettings.excludedWorlds.contains(downBlock.getWorld().getName())) {
+            		if(plugin.debug) {
+            			System.out.println("Melted ice/water is gone now! :D");
+            		}
+            		downBlock.setTypeId(0);
+        		}
+			} else {
+				downBlock.setTypeId(0, true);
+				System.out.println("Melted ice/water is gone now! :D");
+			}
 		}
 	}
 	
