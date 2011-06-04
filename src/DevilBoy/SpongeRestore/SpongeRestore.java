@@ -222,15 +222,15 @@ public class SpongeRestore extends JavaPlugin {
     						} else {
     							player.sendMessage(ChatColor.GREEN + "You must specify the radius. For example: /" + cmd.getName() + " disable radius 5");
     						}
-    					} else if (args[1].equalsIgnoreCase("all")) {
-    						spongeAreas.clear();
-    						player.sendMessage(ChatColor.GREEN + "spongeAreas database cleared!");
     					} else {
-    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " disable <target/radius #/all>");
+    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " disable <target/radius #>");
     						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable just the sponge you're looking at, or all sponges within a certain radius.");
     					}
+    				} else if (args[0].equalsIgnoreCase("clear")) {
+    					spongeAreas.clear();
+						player.sendMessage(ChatColor.GREEN + "spongeAreas database cleared!");
     				} else {
-    					player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " <enable/disable> <target/radius #>");
+    					player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " <enable/disable/clear>");
 						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable or disable sponges.");
     				}
     				
