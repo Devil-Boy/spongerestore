@@ -225,7 +225,6 @@ public class SpongeRestore extends JavaPlugin {
     					} else if (args[1].equalsIgnoreCase("all")) {
     						spongeAreas.clear();
     						player.sendMessage(ChatColor.GREEN + "spongeAreas database cleared!");
-    						player.sendMessage(ChatColor.GREEN + "All sponges have been disabled!");
     					} else {
     						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " disable <target/radius #/all>");
     						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable just the sponge you're looking at, or all sponges within a certain radius.");
