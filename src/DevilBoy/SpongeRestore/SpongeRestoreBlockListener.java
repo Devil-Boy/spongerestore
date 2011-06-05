@@ -150,9 +150,16 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		if (plugin.spongeAreas.containsKey(getBlockCoords(event.getBlock())) && 
         				!pluginSettings.excludedWorlds.contains(event.getBlock().getWorld().getName())) {
         		if(plugin.debug) {
-        			System.out.println("Extinguish fire with sponge!");
+        			System.out.println("Fire shall not pass!");
         		}
         		event.setCancelled(true);
+    		} else if ((isNextToSpongeArea(event.getBlock()) && pluginSettings.attackFire) && 
+    				!pluginSettings.excludedWorlds.contains(event.getBlock().getWorld().getName())) {
+    			if(plugin.debug) {
+        			System.out.println("Extinguish fire with sponge!");
+        		}
+    			event.getBlock().setTypeId(0, true);
+    			event.setCancelled(true);
     		}
     	}
     }
