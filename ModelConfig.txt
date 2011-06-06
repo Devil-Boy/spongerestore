@@ -56,3 +56,11 @@ reduceOverhead=false
 #	this value to high as the plugin must check every block
 #	in the set radius.
 spongeRadius=2
+
+# Fire Extinguisher
+#	This option only works when absorbFire is true.
+#	With this enabled, sponges will go out of their way
+#	to put out fires that try to burn any blocks within
+#	their effective area, adequately preventing the
+#	eternal burning bush effect.
+attackFire=false

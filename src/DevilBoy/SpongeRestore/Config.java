@@ -31,6 +31,7 @@ public class Config implements java.io.Serializable {
 	boolean absorbFire = false;
 	boolean reduceOverhead = false;
 	int spongeRadius = 2;
+	boolean attackFire = false;
 	
 	// The Sponge Crafting Recipe
 	ShapedRecipe spongeRecipe;
@@ -55,6 +56,7 @@ public class Config implements java.io.Serializable {
         absorbFire = getBoolean("absorbFire", false);
         reduceOverhead = getBoolean("reduceOverhead", false);
         spongeRadius = getInt("spongeRadius", 2);
+        attackFire = getBoolean("attackFire", false);
         
         if (customRecipe) {
         	spongeRecipe = getRecipe();
@@ -277,6 +279,14 @@ public class Config implements java.io.Serializable {
     		out.write("#	this value to high as the plugin must check every block\r\n");
     		out.write("#	in the set radius.\r\n");
     		out.write("spongeRadius=" + spongeRadius + "\r\n");
+    		out.write("\r\n");
+    		out.write("# Fire Extinguisher\r\n");
+    		out.write("#	This option only works when absorbFire is true.\r\n");
+    		out.write("#	With this enabled, sponges will go out of their way\r\n");
+    		out.write("#	to put out fires that try to burn any blocks within\r\n");
+    		out.write("#	their effective area, adequately preventing the\r\n");
+    		out.write("#	eternal burning bush effect.\r\n");
+    		out.write("attackFire=" + attackFire + "\r\n");
     		out.close();
     	} catch (Exception e) {
     		// Not sure what to do? O.o
