@@ -96,7 +96,7 @@ public class SpongeRestore extends JavaPlugin {
         playerListener.setConfig(pluginSettings);
         // Register our events
     	PluginManager pm = getServer().getPluginManager();
-    	pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
+    	pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Monitor, this);
     	//The block fromto listener, and block break only need to be activated if sponge
     	//Saturation is off.
     	if(!pluginSettings.spongeSaturation) {

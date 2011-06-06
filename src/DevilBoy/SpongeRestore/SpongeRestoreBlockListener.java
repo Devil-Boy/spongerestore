@@ -45,6 +45,9 @@ public class SpongeRestoreBlockListener extends BlockListener {
 
     // Catch the events!
     public void onBlockPlace(BlockPlaceEvent event) {
+    	if (event.isCancelled()) {
+    		return;
+    	}
     	Block involvedBlock = event.getBlock();
     	String theWorld = event.getBlock().getWorld().getName();
     	if(plugin.debug) {
