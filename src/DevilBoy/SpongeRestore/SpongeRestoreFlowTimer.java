@@ -18,17 +18,23 @@ public class SpongeRestoreFlowTimer implements Runnable {
 		this.plugin = plugin;
 		this.removedCoords = removedCoords;
 		
-		waittime = plugin.pluginSettings.spongeRadius * 2000;
+		waittime = plugin.pluginSettings.spongeRadius * 600;
 	}
 	
 	@Override
 	public void run() {
+		if (plugin.pluginSettings.debug) {
+			System.out.println("FlowTimer running!");
+		}
 		try {
-			wait(waittime);
+			Thread.sleep(waittime);
 		} catch (InterruptedException e) {
 		}
 		for (String currentCoord : removedCoords) {
 			plugin.blockListener.removeFromSpongeAreas(currentCoord);
+		}
+		if (plugin.pluginSettings.debug) {
+			System.out.println("Water is out of time!");
 		}
 		plugin.flowTimers.remove(this);
 	}

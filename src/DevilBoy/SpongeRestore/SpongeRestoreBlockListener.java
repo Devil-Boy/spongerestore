@@ -69,6 +69,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     					}
     					Block currentBlock = event.getBlock().getRelative(x, y, z);
     					addToSpongeAreas(getBlockCoords(currentBlock));
+    					completeRemoveFromSpongeAreas(getDeletedBlockCoords(currentBlock));
     					if (blockIsAffected(currentBlock)) {
     						currentBlock.setType(Material.AIR);
     						if (plugin.debug) {
@@ -126,23 +127,28 @@ public class SpongeRestoreBlockListener extends BlockListener {
     			for (int y=spongeAreaDownLimit; y<spongeAreaUpLimit; y++) {
     				for (int z=spongeAreaDownLimit; z<spongeAreaUpLimit; z++) {
     					Block currentBlock = wasBlock.getRelative(x, y, z);
+    					removeFromSpongeAreas(getBlockCoords(currentBlock));
     					if (pluginSettings.restoreWater) {
-    						markAsRemoved(getBlockCoords(currentBlock));
-    						markedBlocks.add(getDeletedBlockCoords(currentBlock));
-    					} else {
-    						removeFromSpongeAreas(getBlockCoords(currentBlock));
+    						if (!plugin.spongeAreas.containsKey(getBlockCoords(currentBlock))) {
+    							markAsRemoved(getBlockCoords(currentBlock));
+        						markedBlocks.add(getDeletedBlockCoords(currentBlock));
+    						}
     					}
     					if(plugin.debug) {
     						System.out.println("AirSearching: " + x + ", " + y + ", " + z);
     					}
     					if (isAir(currentBlock)) {
+    						currentBlock.setTypeId(90, true);
     						currentBlock.setTypeId(0, true); // Turn air into air.
     					}
     	    		}
         		}
     		}
     		if (pluginSettings.restoreWater) {
-    			plugin.flowTimers.add(new SpongeRestoreFlowTimer(plugin, markedBlocks));
+    			SpongeRestoreFlowTimer flowTimer = new SpongeRestoreFlowTimer(plugin, markedBlocks);
+    			Thread timerThread = new Thread(flowTimer);
+    			timerThread.start();
+    			plugin.flowTimers.add(flowTimer);
     		}
     		if (!pluginSettings.reduceOverhead) {
     			plugin.saveSpongeData();
@@ -252,15 +258,16 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	}
     }
     
+    public void completeRemoveFromSpongeAreas(String coords) {
+    	plugin.spongeAreas.remove(coords);
+    }
+    
     public void markAsRemoved(String coords) {
     	String removedCoord = coords + ".removed";
     	if (plugin.spongeAreas.containsKey(removedCoord)) {
     		plugin.spongeAreas.put(removedCoord, plugin.spongeAreas.get(removedCoord) + 1);
     	} else {
-        	if (plugin.spongeAreas.containsKey(coords)) {
-        		plugin.spongeAreas.put(removedCoord, 1);
-        		plugin.spongeAreas.remove(coords);
-        	}
+        	plugin.spongeAreas.put(removedCoord, 1);
     	}
     }
     
