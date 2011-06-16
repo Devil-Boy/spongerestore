@@ -107,7 +107,9 @@ public class SpongeRestoreBlockListener extends BlockListener {
     		}
     	}
     	if (plugin.spongeAreas.containsKey(getDeletedBlockCoords(receivingBlock))) {
-    		receivingBlock.setTypeId(8, true);
+    		if (isAir(receivingBlock)) {
+    			receivingBlock.setTypeId(8, true);
+    		}
     	}
     }
     
@@ -253,7 +255,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     public void markAsRemoved(String coords) {
     	String removedCoord = coords + ".removed";
     	if (plugin.spongeAreas.containsKey(removedCoord)) {
-    		plugin.spongeAreas.put(coords, plugin.spongeAreas.get(coords) + 1);
+    		plugin.spongeAreas.put(removedCoord, plugin.spongeAreas.get(removedCoord) + 1);
     	} else {
         	if (plugin.spongeAreas.containsKey(coords)) {
         		plugin.spongeAreas.put(removedCoord, 1);
