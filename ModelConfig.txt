@@ -2,18 +2,18 @@
 # SpongeRestore Configuration
 #
 
-# Excluded worlds [names separated by commas]
+# Excluded Worlds [names separated by commas]
 #	Here you list all the worlds in which you
 #	do not want this plugin to work in.
 excludedWorlds=none
 
-# Sponge saturation [true or false]
+# Sponge Saturation [true or false]
 #	Add more realism to sponges by making them only
 #	absorb water from an area without blocking
 #	water's flow afterwards.
 spongeSaturation=false
 
-# Water replacement
+# Water Replacement
 #	Can a player place water near a sponge
 #	while it is still there?
 canPlaceWater=false
@@ -40,6 +40,14 @@ debug=false
 #	just like the liquids.
 absorbFire=false
 
+# Fire Extinguisher
+#	This option only works when absorbFire is true.
+#	With this enabled, sponges will go out of their way
+#	to put out fires that try to burn any blocks within
+#	their effective area, adequately preventing the
+#	eternal burning bush effect.
+attackFire=false
+
 # Reduce Overhead
 #	I recommand you keep this off. In normal circumstances
 #	the sponge database is saved on every sponge break
@@ -57,10 +65,9 @@ reduceOverhead=false
 #	in the set radius.
 spongeRadius=2
 
-# Fire Extinguisher
-#	This option only works when absorbFire is true.
-#	With this enabled, sponges will go out of their way
-#	to put out fires that try to burn any blocks within
-#	their effective area, adequately preventing the
-#	eternal burning bush effect.
-attackFire=false
+# Water Restoration
+#	After sponges are removed, they can leave ugly cascades
+#	of water. With this option turned on, sponges will
+#	expel their water when they are removed, thus allowing
+#	the water to be restored.
+restoreWater=false

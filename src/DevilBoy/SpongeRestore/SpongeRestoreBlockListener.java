@@ -1,6 +1,7 @@
 package DevilBoy.SpongeRestore;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -236,8 +237,24 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	}
     }
     
+    public void markAsRemoved(String coords) {
+    	String removedCoord = coords + ".removed";
+    	if (plugin.spongeAreas.containsKey(removedCoord)) {
+    		plugin.spongeAreas.put(coords, plugin.spongeAreas.get(coords) + 1);
+    	} else {
+        	if (plugin.spongeAreas.containsKey(coords)) {
+        		plugin.spongeAreas.put(removedCoord, 1);
+        		plugin.spongeAreas.remove(coords);
+        	}
+    	}
+    }
+    
     public String getBlockCoords(Block theBlock) {
     	return theBlock.getWorld().getName() + "." + theBlock.getX() + "." + theBlock.getY() + "." + theBlock.getZ();
+    }
+    
+    public String getDeletedBlockCoords(Block theBlock) {
+    	return theBlock.getWorld().getName() + "." + theBlock.getX() + "." + theBlock.getY() + "." + theBlock.getZ() + ".removed";
     }
     
     public boolean isSponge(Block theBlock) {

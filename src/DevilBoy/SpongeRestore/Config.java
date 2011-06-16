@@ -32,6 +32,7 @@ public class Config implements java.io.Serializable {
 	boolean reduceOverhead = false;
 	int spongeRadius = 2;
 	boolean attackFire = false;
+	boolean restoreWater = false;
 	
 	// The Sponge Crafting Recipe
 	ShapedRecipe spongeRecipe;
@@ -57,6 +58,7 @@ public class Config implements java.io.Serializable {
         reduceOverhead = getBoolean("reduceOverhead", false);
         spongeRadius = getInt("spongeRadius", 2);
         attackFire = getBoolean("attackFire", false);
+        restoreWater = getBoolean("restoreWater", false);
         
         if (customRecipe) {
         	spongeRecipe = getRecipe();
@@ -225,18 +227,18 @@ public class Config implements java.io.Serializable {
     		out.write("# SpongeRestore Configuration\r\n");
     		out.write("#\r\n");
     		out.write("\r\n");
-    		out.write("# Excluded worlds [names separated by commas]\r\n");
+    		out.write("# Excluded Worlds [names separated by commas]\r\n");
     		out.write("#	Here you list all the worlds in which you\r\n");
     		out.write("#	do not want this plugin to work in.\r\n");
     		out.write("excludedWorlds=" + linkedListToString(excludedWorlds) + "\r\n");
     		out.write("\r\n");
-    		out.write("# Sponge saturation [true or false]\r\n");
+    		out.write("# Sponge Saturation [true or false]\r\n");
     		out.write("#	Add more realism to sponges by making them only\r\n");
     		out.write("#	absorb water from an area without blocking\r\n");
     		out.write("#	water's flow afterwards.\r\n");
     		out.write("spongeSaturation=" + spongeSaturation + "\r\n");
     		out.write("\r\n");
-    		out.write("# Water replacement\r\n");
+    		out.write("# Water Replacement\r\n");
     		out.write("#	Can a player place water near a sponge\r\n");
     		out.write("#	while it is still there?\r\n");
     		out.write("canPlaceWater=" + canPlaceWater + "\r\n");
@@ -263,6 +265,14 @@ public class Config implements java.io.Serializable {
     		out.write("#	just like the liquids.\r\n");
     		out.write("absorbFire=" + absorbFire + "\r\n");
     		out.write("\r\n");
+    		out.write("# Fire Extinguisher\r\n");
+    		out.write("#	This option only works when absorbFire is true.\r\n");
+    		out.write("#	With this enabled, sponges will go out of their way\r\n");
+    		out.write("#	to put out fires that try to burn any blocks within\r\n");
+    		out.write("#	their effective area, adequately preventing the\r\n");
+    		out.write("#	eternal burning bush effect.\r\n");
+    		out.write("attackFire=" + attackFire + "\r\n");
+    		out.write("\r\n");
     		out.write("# Reduce Overhead\r\n");
     		out.write("#	I recommand you keep this off. In normal circumstances\r\n");
     		out.write("#	the sponge database is saved on every sponge break\r\n");
@@ -280,13 +290,12 @@ public class Config implements java.io.Serializable {
     		out.write("#	in the set radius.\r\n");
     		out.write("spongeRadius=" + spongeRadius + "\r\n");
     		out.write("\r\n");
-    		out.write("# Fire Extinguisher\r\n");
-    		out.write("#	This option only works when absorbFire is true.\r\n");
-    		out.write("#	With this enabled, sponges will go out of their way\r\n");
-    		out.write("#	to put out fires that try to burn any blocks within\r\n");
-    		out.write("#	their effective area, adequately preventing the\r\n");
-    		out.write("#	eternal burning bush effect.\r\n");
-    		out.write("attackFire=" + attackFire + "\r\n");
+    		out.write("# Water Restoration\r\n");
+    		out.write("#	After sponges are removed, they can leave ugly cascades\r\n");
+    		out.write("#	of water. With this option turned on, sponges will\r\n");
+    		out.write("#	expel their water when they are removed, thus allowing\r\n");
+    		out.write("#	the water to be restored.\r\n");
+    		out.write("restoreWater=" + restoreWater + "\r\n");
     		out.close();
     	} catch (Exception e) {
     		// Not sure what to do? O.o
