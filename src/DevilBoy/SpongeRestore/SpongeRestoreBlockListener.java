@@ -93,22 +93,27 @@ public class SpongeRestoreBlockListener extends BlockListener {
     }
     
     public void onBlockFromTo(BlockFromToEvent event) {
+    	Block receivingBlock = event.getToBlock();
     	if(plugin.debug) {
-    		System.out.println("Liquid incoming at: " + event.getToBlock().getX() + ", " + event.getToBlock().getY() + ", " + event.getToBlock().getZ());
+    		System.out.println("Liquid incoming at: " + receivingBlock.getX() + ", " + event.getToBlock().getY() + ", " + event.getToBlock().getZ());
     	}
-    	if (plugin.spongeAreas.containsKey(getBlockCoords(event.getToBlock())) && 
-    			!pluginSettings.excludedWorlds.contains(event.getToBlock().getWorld().getName())) {
+    	if (plugin.spongeAreas.containsKey(getBlockCoords(receivingBlock)) && 
+    			!pluginSettings.excludedWorlds.contains(receivingBlock.getWorld().getName())) {
     		if(plugin.debug) {
     			System.out.println("Recede from sponge!");
     		}
-    		if (blockIsAffected(event.getBlock())) {
+    		if (blockIsAffected(receivingBlock)) {
     			event.setCancelled(true);
     		}
+    	}
+    	if (plugin.spongeAreas.containsKey(getDeletedBlockCoords(receivingBlock))) {
+    		receivingBlock.setTypeId(8, true);
     	}
     }
     
     public void onBlockBreak(BlockBreakEvent event) {
     	Block wasBlock = event.getBlock();
+    	LinkedList<String> markedBlocks = new LinkedList<String>();
     	if (isSponge(wasBlock)) {
     		if(plugin.debug) {
     			System.out.println("Sponge destroyed!");
@@ -119,7 +124,12 @@ public class SpongeRestoreBlockListener extends BlockListener {
     			for (int y=spongeAreaDownLimit; y<spongeAreaUpLimit; y++) {
     				for (int z=spongeAreaDownLimit; z<spongeAreaUpLimit; z++) {
     					Block currentBlock = wasBlock.getRelative(x, y, z);
-    					removeFromSpongeAreas(getBlockCoords(currentBlock));
+    					if (pluginSettings.restoreWater) {
+    						markAsRemoved(getBlockCoords(currentBlock));
+    						markedBlocks.add(getDeletedBlockCoords(currentBlock));
+    					} else {
+    						removeFromSpongeAreas(getBlockCoords(currentBlock));
+    					}
     					if(plugin.debug) {
     						System.out.println("AirSearching: " + x + ", " + y + ", " + z);
     					}
@@ -128,6 +138,9 @@ public class SpongeRestoreBlockListener extends BlockListener {
     					}
     	    		}
         		}
+    		}
+    		if (pluginSettings.restoreWater) {
+    			plugin.flowTimers.add(new SpongeRestoreFlowTimer(plugin, markedBlocks));
     		}
     		if (!pluginSettings.reduceOverhead) {
     			plugin.saveSpongeData();

@@ -27,8 +27,9 @@ public class SpongeRestoreFlowTimer implements Runnable {
 			wait(waittime);
 		} catch (InterruptedException e) {
 		}
-		for (int i=0; i<removedCoords.size(); i++) {
-			plugin.blockListener.removeFromSpongeAreas(removedCoords.get(i));
+		for (String currentCoord : removedCoords) {
+			plugin.blockListener.removeFromSpongeAreas(currentCoord);
 		}
+		plugin.flowTimers.remove(this);
 	}
 }

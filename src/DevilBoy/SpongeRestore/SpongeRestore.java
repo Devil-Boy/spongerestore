@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Properties;
 
 import org.bukkit.block.Block;
@@ -54,6 +55,7 @@ public class SpongeRestore extends JavaPlugin {
     String spongeDbLocation = pluginMainDir + "/spongeAreas.dat";
 	public boolean debug = false;
 	private static PermissionHandler Permissions;
+	public LinkedList<SpongeRestoreFlowTimer> flowTimers = new LinkedList<SpongeRestoreFlowTimer>();
 
     public void onEnable() {
         spongeAreas = loadSpongeData();
