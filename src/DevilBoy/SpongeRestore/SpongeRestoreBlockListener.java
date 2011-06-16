@@ -95,14 +95,14 @@ public class SpongeRestoreBlockListener extends BlockListener {
     public void onBlockFromTo(BlockFromToEvent event) {
     	Block receivingBlock = event.getToBlock();
     	if(plugin.debug) {
-    		System.out.println("Liquid incoming at: " + receivingBlock.getX() + ", " + event.getToBlock().getY() + ", " + event.getToBlock().getZ());
+    		System.out.println("Liquid incoming at: " + receivingBlock.getX() + ", " + receivingBlock.getY() + ", " + receivingBlock.getZ());
     	}
     	if (plugin.spongeAreas.containsKey(getBlockCoords(receivingBlock)) && 
     			!pluginSettings.excludedWorlds.contains(receivingBlock.getWorld().getName())) {
     		if(plugin.debug) {
     			System.out.println("Recede from sponge!");
     		}
-    		if (blockIsAffected(receivingBlock)) {
+    		if (blockIsAffected(event.getBlock())) {
     			event.setCancelled(true);
     		}
     	}
