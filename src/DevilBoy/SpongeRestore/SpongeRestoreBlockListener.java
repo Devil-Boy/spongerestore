@@ -107,9 +107,9 @@ public class SpongeRestoreBlockListener extends BlockListener {
     			event.setCancelled(true);
     		}
     	}
-    	if (plugin.spongeAreas.containsKey(getDeletedBlockCoords(receivingBlock))) {
+    	if (plugin.spongeAreas.containsKey(getDeletedBlockCoords(receivingBlock)) && blockIsAffected(event.getBlock())) {
     		if (isAir(receivingBlock)) {
-    			receivingBlock.setTypeId(8, true);
+    			receivingBlock.setTypeId(event.getBlock().getTypeId(), true);
     		}
     	}
     }
