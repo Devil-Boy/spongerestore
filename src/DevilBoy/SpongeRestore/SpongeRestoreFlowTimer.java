@@ -18,7 +18,7 @@ public class SpongeRestoreFlowTimer implements Runnable {
 		this.plugin = plugin;
 		this.removedCoords = removedCoords;
 		
-		waittime = plugin.pluginSettings.spongeRadius * 600;
+		waittime = plugin.pluginSettings.spongeRadius * plugin.pluginSettings.flowTimeMult;
 	}
 	
 	@Override

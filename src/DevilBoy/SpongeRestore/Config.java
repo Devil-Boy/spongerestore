@@ -33,6 +33,7 @@ public class Config implements java.io.Serializable {
 	int spongeRadius = 2;
 	boolean attackFire = false;
 	boolean restoreWater = false;
+	int flowTimeMult = 600;
 	
 	// The Sponge Crafting Recipe
 	ShapedRecipe spongeRecipe;
@@ -59,6 +60,7 @@ public class Config implements java.io.Serializable {
         spongeRadius = getInt("spongeRadius", 2);
         attackFire = getBoolean("attackFire", false);
         restoreWater = getBoolean("restoreWater", false);
+        flowTimeMult = getInt("flowTimeMult", 600);
         
         if (customRecipe) {
         	spongeRecipe = getRecipe();
@@ -296,6 +298,15 @@ public class Config implements java.io.Serializable {
     		out.write("#	expel their water when they are removed, thus allowing\r\n");
     		out.write("#	the water to be restored.\r\n");
     		out.write("restoreWater=" + restoreWater + "\r\n");
+    		out.write("\r\n");
+    		out.write("# Water Flowtime Multiplier\r\n");
+    		out.write("#	This relates to the Water Restoration feature.\r\n");
+    		out.write("#	It multiplies by the spongeRadius in order to calculate\r\n");
+    		out.write("#	the amount of time water should be given to flo back.\r\n");
+    		out.write("#	Radius * Multiplier = FlowTime (in Milliseconds)\r\n");
+    		out.write("#	Ex: 2 x 600 = 1200 miliseconds for water to restore itself.\r\n");
+    		out.write("#	You only need to change it if your server is really slow.\r\n");
+    		out.write("flowTimeMult=" + flowTimeMult + "\r\n");
     		out.close();
     	} catch (Exception e) {
     		// Not sure what to do? O.o

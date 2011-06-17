@@ -71,3 +71,12 @@ spongeRadius=2
 #	expel their water when they are removed, thus allowing
 #	the water to be restored.
 restoreWater=false
+
+# Water Flowtime Multiplier
+#	This relates to the Water Restoration feature.
+#	It multiplies by the spongeRadius in order to calculate
+#	the amount of time water should be given to flo back.
+#	Radius * Multiplier = FlowTime (in Milliseconds)
+#	Ex: 2 x 600 = 1200 miliseconds for water to restore itself.
+#	You only need to change it if your server is really slow.
+flowTimeMult=600
