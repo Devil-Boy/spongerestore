@@ -1,4 +1,4 @@
-package DevilBoy.SpongeRestore;
+package pgDev.bukkit.SpongeRestore;
 
 import java.awt.Color;
 import java.io.BufferedWriter;

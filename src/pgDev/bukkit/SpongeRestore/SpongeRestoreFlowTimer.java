@@ -1,4 +1,4 @@
-package DevilBoy.SpongeRestore;
+package pgDev.bukkit.SpongeRestore;
 
 import java.util.LinkedList;
 

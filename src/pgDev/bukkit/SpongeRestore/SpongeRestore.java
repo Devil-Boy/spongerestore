@@ -1,4 +1,4 @@
-package DevilBoy.SpongeRestore;
+package pgDev.bukkit.SpongeRestore;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +28,8 @@ import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 
-import DevilBoy.SpongeRestore.Config;
+import pgDev.bukkit.SpongeRestore.Config;
+
 
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
@@ -246,6 +247,7 @@ public class SpongeRestore extends JavaPlugin {
     	return false;
     }
     
+    // Permissions Methods
     private void setupPermissions() {
         Plugin permissions = this.getServer().getPluginManager().getPlugin("Permissions");
 
@@ -259,13 +261,9 @@ public class SpongeRestore extends JavaPlugin {
     
     public static boolean hasPermissions(Player player, String node) {
         if (Permissions != null) {
-        	if (Permissions.has(player, "SpongeRestore.all")) {
-        		return true;
-        	} else {
-        		return Permissions.has(player, node);
-        	}
+        	return Permissions.has(player, node);
         } else {
-            return player.isOp();
+            return player.hasPermission(node);
         }
     }
     

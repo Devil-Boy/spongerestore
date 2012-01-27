@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="I:/Kervin&apos;s Folder/Java Programs/bukkit-generator/craftbukkit-0.0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="I:/Kervin&apos;s Folder/Java Programs/bukkit-generator/Permissions.jar"/>
+	<classpathentry kind="lib" path="I:/Kervin&apos;s Folder/Java Programs/bukkit-apis/craftbukkit-1.1-R1.jar"/>
+	<classpathentry kind="lib" path="I:/Kervin&apos;s Folder/Java Programs/bukkit-apis/Permissions.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

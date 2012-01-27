@@ -1,4 +1,4 @@
-package DevilBoy.SpongeRestore;
+package pgDev.bukkit.SpongeRestore;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
