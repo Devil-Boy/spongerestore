@@ -28,7 +28,7 @@ import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 
-import pgDev.bukkit.SpongeRestore.Config;
+import pgDev.bukkit.SpongeRestore.SRConfig;
 
 
 import com.nijiko.permissions.PermissionHandler;
@@ -48,7 +48,7 @@ public class SpongeRestore extends JavaPlugin {
     public final SpongeRestorePlayerListener playerListener = new SpongeRestorePlayerListener(this);
     public final SpongeRestoreBlockListener blockListener = new SpongeRestoreBlockListener(this);
     private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
-    Config pluginSettings;
+    SRConfig pluginSettings;
     public HashMap<String, Integer> spongeAreas = new HashMap<String, Integer>();
     String pluginMainDir = "./plugins/SpongeRestore";
     String pluginConfigLocation = pluginMainDir + "/SpongeRestore.cfg";
@@ -56,7 +56,7 @@ public class SpongeRestore extends JavaPlugin {
     String spongeDbLocation = pluginMainDir + "/spongeAreas.dat";
 	public boolean debug = false;
 	private static PermissionHandler Permissions;
-	public LinkedList<SpongeRestoreFlowTimer> flowTimers = new LinkedList<SpongeRestoreFlowTimer>();
+	public LinkedList<SRFlowTimer> flowTimers = new LinkedList<SRFlowTimer>();
 
     public void onEnable() {
         spongeAreas = loadSpongeData();
@@ -68,9 +68,9 @@ public class SpongeRestore extends JavaPlugin {
         		preSettings.load(new FileInputStream(new File(pluginConfigLocation)));
         		if ((new File(spongeRecipeLocation)).exists()) {
         			preSettings.load(new FileInputStream(new File(spongeRecipeLocation)));
-        			pluginSettings = new Config(preSettings, this, true);
+        			pluginSettings = new SRConfig(preSettings, this, true);
         		} else {
-        			pluginSettings = new Config(preSettings, this, false);
+        			pluginSettings = new SRConfig(preSettings, this, false);
         			pluginSettings.createRecipeConfig();
         			System.out.println("SpongeRecipe created!");
         		}
@@ -82,9 +82,9 @@ public class SpongeRestore extends JavaPlugin {
         	} else {
         		if ((new File(spongeRecipeLocation)).exists()) {
         			preSettings.load(new FileInputStream(new File(spongeRecipeLocation)));
-        			pluginSettings = new Config(preSettings, this, true);
+        			pluginSettings = new SRConfig(preSettings, this, true);
         		} else {
-        			pluginSettings = new Config(preSettings, this, false);
+        			pluginSettings = new SRConfig(preSettings, this, false);
         			pluginSettings.createRecipeConfig();
         			System.out.println("SpongeRecipe created!");
         		}

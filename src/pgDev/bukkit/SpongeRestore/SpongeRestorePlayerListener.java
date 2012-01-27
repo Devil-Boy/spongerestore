@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class SpongeRestorePlayerListener extends PlayerListener {
     private final SpongeRestore plugin;
-    private Config pluginSettings;
+    private SRConfig pluginSettings;
 
     public SpongeRestorePlayerListener(SpongeRestore instance) {
         plugin = instance;
@@ -45,7 +45,7 @@ public class SpongeRestorePlayerListener extends PlayerListener {
     	}
     }
 
-	public void setConfig(Config pluginSettings2) {
+	public void setConfig(SRConfig pluginSettings2) {
 		pluginSettings = pluginSettings2;
 		
 	}

@@ -26,7 +26,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 public class SpongeRestoreBlockListener extends BlockListener {
     private final SpongeRestore plugin;
-    private Config pluginSettings;
+    private SRConfig pluginSettings;
     public int spongeAreaUpLimit;
     public int spongeAreaDownLimit;
     public HashSet<Byte> transparentBlocks = new HashSet<Byte>();
@@ -145,7 +145,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
         		}
     		}
     		if (pluginSettings.restoreWater) {
-    			SpongeRestoreFlowTimer flowTimer = new SpongeRestoreFlowTimer(plugin, markedBlocks);
+    			SRFlowTimer flowTimer = new SRFlowTimer(plugin, markedBlocks);
     			Thread timerThread = new Thread(flowTimer);
     			timerThread.start();
     			plugin.flowTimers.add(flowTimer);
@@ -327,7 +327,7 @@ public class SpongeRestoreBlockListener extends BlockListener {
     	}
     }
 
-	public void setConfig(Config pluginSettings2) {
+	public void setConfig(SRConfig pluginSettings2) {
 		pluginSettings = pluginSettings2;
 		spongeAreaUpLimit = pluginSettings.spongeRadius + 1;
 	    spongeAreaDownLimit = pluginSettings.spongeRadius * -1;

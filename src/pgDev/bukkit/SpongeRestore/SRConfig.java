@@ -16,7 +16,7 @@ import org.bukkit.inventory.ShapedRecipe;
  * @author DevilBoy
  */
 
-public class Config implements java.io.Serializable {
+public class SRConfig implements java.io.Serializable {
 	private Properties properties;
 	private final SpongeRestore plugin;
 	public boolean upToDate = true;
@@ -38,7 +38,7 @@ public class Config implements java.io.Serializable {
 	// The Sponge Crafting Recipe
 	ShapedRecipe spongeRecipe;
 	
-	public Config(Properties p, final SpongeRestore plugin, boolean customRecipe) throws NoSuchElementException {
+	public SRConfig(Properties p, final SpongeRestore plugin, boolean customRecipe) throws NoSuchElementException {
         properties = p;
         this.plugin = plugin;
         

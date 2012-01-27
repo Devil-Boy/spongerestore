@@ -9,12 +9,12 @@ import java.util.LinkedList;
  * @author Devil Boy
  *
  */
-public class SpongeRestoreFlowTimer implements Runnable {
+public class SRFlowTimer implements Runnable {
 	private final SpongeRestore plugin;
 	private LinkedList<String> removedCoords;
 	int waittime;
 	
-	public SpongeRestoreFlowTimer(SpongeRestore plugin, LinkedList<String> removedCoords) {
+	public SRFlowTimer(SpongeRestore plugin, LinkedList<String> removedCoords) {
 		this.plugin = plugin;
 		this.removedCoords = removedCoords;
 		
