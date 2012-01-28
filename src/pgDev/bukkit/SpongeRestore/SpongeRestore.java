@@ -45,6 +45,7 @@ import com.nijikokun.bukkit.Permissions.Permissions;
  */
 
 public class SpongeRestore extends JavaPlugin {
+	public final SRBaseListener baseListener = new SRBaseListener(this);
     public final SpongeRestorePlayerListener playerListener = new SpongeRestorePlayerListener(this);
     public final SpongeRestoreBlockListener blockListener = new SpongeRestoreBlockListener(this);
     private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
@@ -99,7 +100,7 @@ public class SpongeRestore extends JavaPlugin {
         playerListener.setConfig(pluginSettings);
         // Register our events
     	PluginManager pm = getServer().getPluginManager();
-    	pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Monitor, this);
+    	pm.registerEvents(baseListener, this);
     	//The block fromto listener, and block break only need to be activated if sponge
     	//Saturation is off.
     	if(!pluginSettings.spongeSaturation) {
@@ -109,7 +110,6 @@ public class SpongeRestore extends JavaPlugin {
     		pm.registerEvent(Event.Type.BLOCK_BURN, blockListener, Priority.Normal, this);
     		pm.registerEvent(Event.Type.BLOCK_PHYSICS, blockListener, Priority.Normal, this);
     	}
-    	pm.registerEvent(Event.Type.PLAYER_BUCKET_EMPTY , playerListener, Priority.Normal, this);
     	
     	// Adding sponge recipe
     	if (pluginSettings.craftableSponges) {
@@ -265,6 +265,109 @@ public class SpongeRestore extends JavaPlugin {
         } else {
             return player.hasPermission(node);
         }
+    }
+    
+    // Non-Static Functions
+    public boolean blockIsAffected(Block theBlock) {
+		if (isWater(theBlock)) {
+			return true;
+		} else if (isLava(theBlock)) {
+			if (pluginSettings.absorbLava) {
+				return true;
+			}
+		} else if (isFire(theBlock)) {
+			if(pluginSettings.absorbFire) {
+				return true;
+			}
+		}
+		return false;
+	}
+    
+    public void addToSpongeAreas(String coords) {
+    	if (spongeAreas.containsKey(coords)) {
+    		spongeAreas.put(coords, spongeAreas.get(coords) + 1);
+    	} else {
+    		spongeAreas.put(coords, 1);
+    	}
+    }
+    
+    public void removeFromSpongeAreas(String coords) {
+    	if (spongeAreas.containsKey(coords)) {
+    		spongeAreas.put(coords, spongeAreas.get(coords) - 1);
+    		if (spongeAreas.get(coords) == 0) {
+    			spongeAreas.remove(coords);
+    		}
+    	}
+    }
+    
+    public void completeRemoveFromSpongeAreas(String coords) {
+    	spongeAreas.remove(coords);
+    }
+    
+    public void markAsRemoved(String coords) {
+    	String removedCoord = coords + ".removed";
+    	if (spongeAreas.containsKey(removedCoord)) {
+    		spongeAreas.put(removedCoord, spongeAreas.get(removedCoord) + 1);
+    	} else {
+        	spongeAreas.put(removedCoord, 1);
+    	}
+    }
+    
+    // Static Functions
+    public static String getBlockCoords(Block theBlock) {
+    	return theBlock.getWorld().getName() + "." + theBlock.getX() + "." + theBlock.getY() + "." + theBlock.getZ();
+    }
+    
+    public static String getDeletedBlockCoords(Block theBlock) {
+    	return theBlock.getWorld().getName() + "." + theBlock.getX() + "." + theBlock.getY() + "." + theBlock.getZ() + ".removed";
+    }
+    
+    public static boolean isSponge(Block theBlock) {
+    	if (theBlock.getType() == Material.SPONGE) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
+    public static boolean isWater(Block theBlock) {
+    	if (theBlock.getTypeId() == 8 || theBlock.getTypeId() == 9) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
+    public static boolean isLava(Block theBlock) {
+    	if (theBlock.getTypeId() == 10 || theBlock.getTypeId() == 11) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
+    public static boolean isFire(Block theBlock) {
+    	if (theBlock.getTypeId() == 51) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
+    public static boolean isAir(Block theBlock) {
+    	if (theBlock.getType() == Material.AIR) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
+    public static boolean isIce(Block theBlock) {
+    	if (theBlock.getType() == Material.ICE) {
+    		return true;
+    	} else {
+    		return false;
+    	}
     }
     
 }
