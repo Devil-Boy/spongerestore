@@ -16,7 +16,7 @@ import org.bukkit.inventory.ShapedRecipe;
  * @author DevilBoy
  */
 
-public class SRConfig implements java.io.Serializable {
+public class SRConfig {
 	private Properties properties;
 	private final SpongeRestore plugin;
 	public boolean upToDate = true;
