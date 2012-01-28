@@ -18,22 +18,21 @@ public class SRBaseListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockPlace(BlockPlaceEvent event) {
     	if (!event.isCancelled()) {
-	    	Block involvedBlock = event.getBlock();
-	    	if(plugin.debug) {
+	    	if (plugin.debug) {
 	    		System.out.println(event.getPlayer().getName() + " placed a block...");
 	    	}
 	    	// Check if the block is a Sponge
-	    	if (SpongeRestore.isSponge(involvedBlock) && !plugin.pluginSettings.excludedWorlds.contains(event.getBlock().getWorld().getName())) {
-	    		if(plugin.debug) {
+	    	if (plugin.isSponge(event.getBlock()) && !plugin.pluginSettings.excludedWorlds.contains(event.getBlock().getWorld().getName())) {
+	    		if (plugin.debug) {
 	    			System.out.println("and it's a sponge!!!!!");
 	    		}
-	    		plugin.enableSponge(involvedBlock);
+	    		plugin.enableSponge(event.getBlock());
 	    	}
 	    	
 	    	// Check if a water block is being placed within sponge's area
-	    	if (!plugin.pluginSettings.canPlaceWater && ((plugin.blockIsAffected(involvedBlock)) && plugin.spongeAreas.containsKey(SpongeRestore.getBlockCoords(involvedBlock)))) {
+	    	if (!plugin.pluginSettings.canPlaceWater && ((plugin.blockIsAffected(event.getBlock())) && plugin.spongeAreas.containsKey(plugin.getBlockCoords(event.getBlock())))) {
 	        	event.setCancelled(true);
-	        	if(plugin.debug) {
+	        	if (plugin.debug) {
 	            	System.out.println("You canot put liquid there!! :O");
 	        	}
 	    	}
@@ -44,12 +43,12 @@ public class SRBaseListener implements Listener {
 	@EventHandler
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
     	Block involvedBlock = event.getBlockClicked().getRelative(event.getBlockFace()) ;
-    	String dumpLocation = SpongeRestore.getBlockCoords(involvedBlock);
+    	String dumpLocation = plugin.getBlockCoords(involvedBlock);
     	Material bucketType = event.getBucket();
-    	if(plugin.debug) {
+    	if (plugin.debug) {
     		System.out.println(bucketType + " emptied!");
     	}
-    	if(plugin.debug) {
+    	if (plugin.debug) {
     		System.out.println(involvedBlock.getType() + " dumped out!");
     	}
     	if (!plugin.pluginSettings.canPlaceWater && ((bucketType == Material.WATER_BUCKET || (plugin.pluginSettings.absorbLava && bucketType == Material.LAVA_BUCKET)) && plugin.spongeAreas.containsKey(dumpLocation))) {

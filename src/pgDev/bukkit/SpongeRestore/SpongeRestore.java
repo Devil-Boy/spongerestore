@@ -304,17 +304,17 @@ public class SpongeRestore extends JavaPlugin {
 			for (int y=spongeAreaDownLimit; y<spongeAreaUpLimit; y++) {
 				for (int z=spongeAreaDownLimit; z<spongeAreaUpLimit; z++) {
 					Block currentBlock = theSponge.getRelative(x, y, z);
-					removeFromSpongeAreas(SpongeRestore.getBlockCoords(currentBlock));
+					removeFromSpongeAreas(getBlockCoords(currentBlock));
 					if (pluginSettings.restoreWater) {
-						if (!spongeAreas.containsKey(SpongeRestore.getBlockCoords(currentBlock))) {
-							markAsRemoved(SpongeRestore.getBlockCoords(currentBlock));
-    						markedBlocks.add(SpongeRestore.getDeletedBlockCoords(currentBlock));
+						if (!spongeAreas.containsKey(getBlockCoords(currentBlock))) {
+							markAsRemoved(getBlockCoords(currentBlock));
+    						markedBlocks.add(getDeletedBlockCoords(currentBlock));
 						}
 					}
 					if(debug) {
 						System.out.println("AirSearching: " + x + ", " + y + ", " + z);
 					}
-					if (SpongeRestore.isAir(currentBlock)) {
+					if (isAir(currentBlock)) {
 						currentBlock.setTypeId(90, true);
 						currentBlock.setTypeId(0, true); // Turn air into air.
 					}
@@ -459,61 +459,37 @@ public class SpongeRestore extends JavaPlugin {
 		return spongesConverted;
 	}
     
-    // Static Functions
-    public static String getBlockCoords(Block theBlock) {
+    // Universal Functions
+    public String getBlockCoords(Block theBlock) {
     	return theBlock.getWorld().getName() + "." + theBlock.getX() + "." + theBlock.getY() + "." + theBlock.getZ();
     }
     
-    public static String getDeletedBlockCoords(Block theBlock) {
+    public String getDeletedBlockCoords(Block theBlock) {
     	return theBlock.getWorld().getName() + "." + theBlock.getX() + "." + theBlock.getY() + "." + theBlock.getZ() + ".removed";
     }
     
-    public static boolean isSponge(Block theBlock) {
-    	if (theBlock.getType() == Material.SPONGE) {
-    		return true;
-    	} else {
-    		return false;
-    	}
+    public boolean isSponge(Block theBlock) {
+    	return (theBlock.getType() == Material.SPONGE);
     }
     
-    public static boolean isWater(Block theBlock) {
-    	if (theBlock.getTypeId() == 8 || theBlock.getTypeId() == 9) {
-    		return true;
-    	} else {
-    		return false;
-    	}
+    public boolean isWater(Block theBlock) {
+    	return (theBlock.getTypeId() == 8 || theBlock.getTypeId() == 9);
     }
     
-    public static boolean isLava(Block theBlock) {
-    	if (theBlock.getTypeId() == 10 || theBlock.getTypeId() == 11) {
-    		return true;
-    	} else {
-    		return false;
-    	}
+    public boolean isLava(Block theBlock) {
+    	return (theBlock.getTypeId() == 10 || theBlock.getTypeId() == 11);
     }
     
-    public static boolean isFire(Block theBlock) {
-    	if (theBlock.getTypeId() == 51) {
-    		return true;
-    	} else {
-    		return false;
-    	}
+    public boolean isFire(Block theBlock) {
+    	return (theBlock.getTypeId() == 51);
     }
     
-    public static boolean isAir(Block theBlock) {
-    	if (theBlock.getType() == Material.AIR) {
-    		return true;
-    	} else {
-    		return false;
-    	}
+    public boolean isAir(Block theBlock) {
+    	return (theBlock.getType() == Material.AIR);
     }
     
-    public static boolean isIce(Block theBlock) {
-    	if (theBlock.getType() == Material.ICE) {
-    		return true;
-    	} else {
-    		return false;
-    	}
+    public boolean isIce(Block theBlock) {
+    	return (theBlock.getType() == Material.ICE);
     }
     
 }
