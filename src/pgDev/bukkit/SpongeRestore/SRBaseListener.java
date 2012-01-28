@@ -28,7 +28,6 @@ public class SRBaseListener implements Listener {
 	    		if(plugin.debug) {
 	    			System.out.println("and it's a sponge!!!!!");
 	    		}
-	    		
 	    		plugin.enableSponge(involvedBlock);
 	    	}
 	    	

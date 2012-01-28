@@ -247,7 +247,7 @@ public class SRConfig implements java.io.Serializable {
     		out.write("\r\n");
     		out.write("# Craftable Sponges\r\n");
     		out.write("#	Choose whether this plugin lets players craft\r\n");
-    		out.write("#	sponges or not. Useful for if you use anothe\r\n");
+    		out.write("#	sponges or not. Useful for if you use another\r\n");
     		out.write("#	plugin to handle crafting recipes.\r\n");
     		out.write("craftableSponges=" + craftableSponges + "\r\n");
     		out.write("\r\n");
@@ -302,9 +302,9 @@ public class SRConfig implements java.io.Serializable {
     		out.write("# Water Flowtime Multiplier\r\n");
     		out.write("#	This relates to the Water Restoration feature.\r\n");
     		out.write("#	It multiplies by the spongeRadius in order to calculate\r\n");
-    		out.write("#	the amount of time water should be given to flo back.\r\n");
+    		out.write("#	the amount of time water should be given to flow back.\r\n");
     		out.write("#	Radius * Multiplier = FlowTime (in Milliseconds)\r\n");
-    		out.write("#	Ex: 2 x 600 = 1200 miliseconds for water to restore itself.\r\n");
+    		out.write("#	Ex: 2 x 600 = 1200 milliseconds for water to restore itself.\r\n");
     		out.write("#	You only need to change it if your server is really slow.\r\n");
     		out.write("flowTimeMult=" + flowTimeMult + "\r\n");
     		out.close();
