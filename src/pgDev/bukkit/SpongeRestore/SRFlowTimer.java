@@ -31,7 +31,7 @@ public class SRFlowTimer implements Runnable {
 		} catch (InterruptedException e) {
 		}
 		for (String currentCoord : removedCoords) {
-			plugin.blockListener.removeFromSpongeAreas(currentCoord);
+			plugin.removeFromSpongeAreas(currentCoord);
 		}
 		if (plugin.pluginSettings.debug) {
 			System.out.println("Water is out of time!");
