@@ -278,7 +278,7 @@ public class SpongeRestore extends JavaPlugin {
     	// Check for water or Lava
 		for (int x=spongeAreaDownLimit; x<spongeAreaUpLimit; x++) {
 			for (int y=spongeAreaDownLimit; y<spongeAreaUpLimit; y++) {
-				for (int z=spongeAreaDownLimit; z<spongeAreaUpLimit; z++) {		
+				for (int z=spongeAreaDownLimit; z<spongeAreaUpLimit; z++) {	
 					if(debug) {
 						System.out.println("Checking: " + x + ", " + y + ", " + z);
 					}

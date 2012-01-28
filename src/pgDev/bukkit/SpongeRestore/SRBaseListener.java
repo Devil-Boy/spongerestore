@@ -19,12 +19,11 @@ public class SRBaseListener implements Listener {
 	public void onBlockPlace(BlockPlaceEvent event) {
     	if (!event.isCancelled()) {
 	    	Block involvedBlock = event.getBlock();
-	    	String theWorld = event.getBlock().getWorld().getName();
 	    	if(plugin.debug) {
 	    		System.out.println(event.getPlayer().getName() + " placed a block...");
 	    	}
 	    	// Check if the block is a Sponge
-	    	if (SpongeRestore.isSponge(involvedBlock) && !plugin.pluginSettings.excludedWorlds.contains(theWorld)) {
+	    	if (SpongeRestore.isSponge(involvedBlock) && !plugin.pluginSettings.excludedWorlds.contains(event.getBlock().getWorld().getName())) {
 	    		if(plugin.debug) {
 	    			System.out.println("and it's a sponge!!!!!");
 	    		}
@@ -33,7 +32,7 @@ public class SRBaseListener implements Listener {
 	    	
 	    	// Check if a water block is being placed within sponge's area
 	    	if (!plugin.pluginSettings.canPlaceWater && ((plugin.blockIsAffected(involvedBlock)) && plugin.spongeAreas.containsKey(SpongeRestore.getBlockCoords(involvedBlock)))) {
-	        	involvedBlock.setType(Material.AIR);
+	        	event.setCancelled(true);
 	        	if(plugin.debug) {
 	            	System.out.println("You canot put liquid there!! :O");
 	        	}

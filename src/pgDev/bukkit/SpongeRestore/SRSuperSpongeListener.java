@@ -5,11 +5,7 @@ import java.util.LinkedList;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.*;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.*;
 
 public class SRSuperSpongeListener implements Listener {
 	private final SpongeRestore plugin;
@@ -24,16 +20,14 @@ public class SRSuperSpongeListener implements Listener {
     	if(plugin.debug) {
     		System.out.println("Liquid incoming at: " + receivingBlock.getX() + ", " + receivingBlock.getY() + ", " + receivingBlock.getZ());
     	}
-    	if (plugin.spongeAreas.containsKey(SpongeRestore.getBlockCoords(receivingBlock)) && 
-    			!plugin.pluginSettings.excludedWorlds.contains(receivingBlock.getWorld().getName())) {
+    	if (plugin.spongeAreas.containsKey(SpongeRestore.getBlockCoords(receivingBlock))) {
     		if(plugin.debug) {
     			System.out.println("Recede from sponge!");
     		}
     		if (plugin.blockIsAffected(event.getBlock())) {
     			event.setCancelled(true);
     		}
-    	}
-    	if (plugin.spongeAreas.containsKey(SpongeRestore.getDeletedBlockCoords(receivingBlock)) && plugin.blockIsAffected(event.getBlock())) {
+    	} else if (plugin.spongeAreas.containsKey(SpongeRestore.getDeletedBlockCoords(receivingBlock)) && plugin.blockIsAffected(event.getBlock())) {
     		if (SpongeRestore.isAir(receivingBlock)) {
     			receivingBlock.setTypeId(event.getBlock().getTypeId(), true);
     		}
@@ -111,19 +105,18 @@ public class SRSuperSpongeListener implements Listener {
     	}
     }
 	
-	@EventHandler
-	public void onBlockPhysics(BlockPhysicsEvent event) {
-    	if (event.getChangedType() == Material.WATER || event.getChangedType() == Material.STATIONARY_WATER) {
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onBlockFade(BlockFadeEvent event) {
+    	if (event.getBlock().getType() == Material.ICE) {
     		if (plugin.debug) {
         		System.out.println("Ice melting at: " + event.getBlock().getX() + ", " + event.getBlock().getY() + ", " + event.getBlock().getZ());
         	}
-    		if (!plugin.pluginSettings.canPlaceWater || SpongeRestore.isWater(event.getBlock())) {
-    			if (plugin.spongeAreas.containsKey(SpongeRestore.getBlockCoords(event.getBlock())) && !plugin.pluginSettings.excludedWorlds.contains(event.getBlock().getWorld().getName())) {
-            		if (plugin.debug) {
-            			System.out.println("Sneaky ice, you thought you could let water in!");
-            		}
-            		event.getBlock().setTypeId(0);
+    		if (!plugin.pluginSettings.canPlaceWater && plugin.spongeAreas.containsKey(SpongeRestore.getBlockCoords(event.getBlock()))) {
+        		if (plugin.debug) {
+        			System.out.println("Sneaky ice, you thought you could let water in!");
         		}
+        		event.setCancelled(true);
+        		event.getBlock().setType(Material.AIR);
     		}
     	}
     }
