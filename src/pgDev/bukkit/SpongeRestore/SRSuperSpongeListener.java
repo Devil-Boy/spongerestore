@@ -124,7 +124,22 @@ public class SRSuperSpongeListener implements Listener {
 		if (plugin.hasSponges(event.getBlocks())) {
 			if (plugin.pluginSettings.pistonMove) {
 				LinkedList<Block> movedSponges = plugin.getSponges(event.getBlocks());
-				
+				if (movedSponges.size() == 1) { // No need to check for sequencial sponges
+					Block spawnge = movedSponges.getLast();
+					plugin.disableSponge((spawnge));
+					plugin.enableSponge(spawnge.getRelative(event.getDirection()));
+				} else {
+					for (Block spawnge : movedSponges) {
+						// Disable old spot?
+						if (!plugin.isSponge(spawnge.getRelative(event.getDirection().getOppositeFace()))) {
+							plugin.disableSponge((spawnge));
+						}
+						// Enable new spot?
+						if (!plugin.isSponge(spawnge.getRelative(event.getDirection()))) {
+							plugin.enableSponge(spawnge.getRelative(event.getDirection()));
+						}
+					}
+				}
 			} else {
 				event.setCancelled(true);
 			}

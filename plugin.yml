@@ -1,6 +1,6 @@
 name: SpongeRestore
 main: pgDev.bukkit.SpongeRestore.SpongeRestore
-version: 1.3
+version: 1.4
 author: PG Dev Team
 authors: [Devil Boy]
 description: Bringing back the functionality of sponges.
