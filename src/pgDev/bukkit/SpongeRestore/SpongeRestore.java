@@ -185,7 +185,7 @@ public class SpongeRestore extends JavaPlugin {
     	if(cmd.getName().equalsIgnoreCase("sponge") || cmd.getName().equalsIgnoreCase("sponges") || cmd.getName().equalsIgnoreCase("sr")) {
     		if (sender instanceof Player) {
     			Player player = (Player)sender;
-    			if(hasPermissions(player, "SpongeRestore.enable") || hasPermissions(player, "SpongeRestore.disable") || hasPermissions(player, "SpongeRestore.clear")) {
+    			if(hasPermissions(player, "spongerestore.enable") || hasPermissions(player, "spongerestore.disable") || hasPermissions(player, "spongerestore.clear")) {
 	    			if (args.length <2) {
 	    				if (args.length <1) {
 	    					args = new String[] {"", "", ""};
@@ -195,7 +195,7 @@ public class SpongeRestore extends JavaPlugin {
     				if (debug) {
     					System.out.println(player + " used /" + cmd.getName() + " " + args[0] + " " + args[1]);
     				}
-    				if (args[0].equalsIgnoreCase("enable") && hasPermissions(player, "SpongeRestore.enable")) {
+    				if (args[0].equalsIgnoreCase("enable") && hasPermissions(player, "spongerestore.enable")) {
     					if (args[1].equalsIgnoreCase("target") || args[1].equalsIgnoreCase("this") || args[1].equalsIgnoreCase("one")) {
     						if (isSponge(player.getTargetBlock(transparentBlocks, 100))) {
     							enableSponge(player.getTargetBlock(transparentBlocks, 100));
@@ -217,7 +217,7 @@ public class SpongeRestore extends JavaPlugin {
     						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " enable <target/radius #>");
     						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable just the sponge you're looking at, or all sponges within a certain radius.");
     					}
-    				} else if (args[0].equalsIgnoreCase("disable") && hasPermissions(player, "SpongeRestore.disable")) {
+    				} else if (args[0].equalsIgnoreCase("disable") && hasPermissions(player, "spongerestore.disable")) {
     					if (args[1].equalsIgnoreCase("target") || args[1].equalsIgnoreCase("this") || args[1].equalsIgnoreCase("one")) {
     						Block targetBlock = player.getTargetBlock(transparentBlocks, 100);
     						if (isSponge(targetBlock)) {
@@ -240,7 +240,7 @@ public class SpongeRestore extends JavaPlugin {
     						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " disable <target/radius #>");
     						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable just the sponge you're looking at, or all sponges within a certain radius.");
     					}
-    				} else if (args[0].equalsIgnoreCase("clear") && hasPermissions(player, "SpongeRestore.clear")) {
+    				} else if (args[0].equalsIgnoreCase("clear") && hasPermissions(player, "spongerestore.clear")) {
     					spongeAreas.clear();
 						player.sendMessage(ChatColor.GREEN + "spongeAreas database cleared!");
     				} else {

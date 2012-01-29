@@ -17,22 +17,22 @@ commands:
       usage: /<command> <enable/disable/clear>
 
 permissions:
-    SpongeRestore.*:
+    spongerestore.*:
         default: op
         description: Gives access to all sponge database editing commands.
         children:
-            SpongeRestore.enable: true
-            SpongeRestore.disable: true
-            SpongeRestore.clear: true
-    SpongeRestore.enable:
+            spongerestore.enable: true
+            spongerestore.disable: true
+            spongerestore.clear: true
+    spongerestore.enable:
         default: op
         description: Can use the "/sponge enable" command.
         command: "/sponge enable <target/radius> [#]"
-    SpongeRestore.disable:
+    spongerestore.disable:
         default: op
         description: Can use the "/sponge disable" command.
         command: "/sponge disable <target/radius> [#]"
-    SpongeRestore.clear:
+    spongerestore.clear:
         default: op
         description: Can use the "/sponge clear" command.
         command: "/sponge clear"
