@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 import org.bukkit.block.Block;
@@ -39,6 +40,7 @@ import com.nijikokun.bukkit.Permissions.Permissions;
 public class SpongeRestore extends JavaPlugin {
 	// Listeners
 	public final SRBaseListener baseListener = new SRBaseListener(this);
+	public final SRSaturatedSpongeListener saturatedListener = new SRSaturatedSpongeListener(this);
 	public final SRSuperSpongeListener superListener = new SRSuperSpongeListener(this);
     
 	// Configuration
@@ -121,7 +123,9 @@ public class SpongeRestore extends JavaPlugin {
         // Register our events
     	PluginManager pm = getServer().getPluginManager();
     	pm.registerEvents(baseListener, this);
-    	if(!pluginSettings.spongeSaturation) {
+    	if(pluginSettings.spongeSaturation) {
+    		pm.registerEvents(saturatedListener, this);
+    	} else {
     		pm.registerEvents(superListener, this);
     	}
     	
@@ -490,6 +494,25 @@ public class SpongeRestore extends JavaPlugin {
     
     public boolean isIce(Block theBlock) {
     	return (theBlock.getType() == Material.ICE);
+    }
+    
+    public boolean hasSponges(List<Block> blocks) {
+    	for (Block blawk : blocks) {
+    		if (isSponge(blawk)) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    public LinkedList<Block> getSponges(List<Block> blocks) {
+    	LinkedList<Block> output = new LinkedList<Block>();
+    	for (Block blawk : blocks) {
+    		if (isSponge(blawk)) {
+    			output.add(blawk);
+    		}
+    	}
+    	return output;
     }
     
 }

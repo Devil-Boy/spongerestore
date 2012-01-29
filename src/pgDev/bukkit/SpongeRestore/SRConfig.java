@@ -34,6 +34,7 @@ public class SRConfig {
 	boolean attackFire = false;
 	boolean restoreWater = false;
 	int flowTimeMult = 600;
+	boolean pistonMove = true;
 	
 	// The Sponge Crafting Recipe
 	ShapedRecipe spongeRecipe;
@@ -61,6 +62,7 @@ public class SRConfig {
         attackFire = getBoolean("attackFire", false);
         restoreWater = getBoolean("restoreWater", false);
         flowTimeMult = getInt("flowTimeMult", 600);
+        pistonMove = getBoolean("pistonMove", true);
         
         if (customRecipe) {
         	spongeRecipe = getRecipe();
@@ -307,6 +309,10 @@ public class SRConfig {
     		out.write("#	Ex: 2 x 600 = 1200 milliseconds for water to restore itself.\r\n");
     		out.write("#	You only need to change it if your server is really slow.\r\n");
     		out.write("flowTimeMult=" + flowTimeMult + "\r\n");
+    		out.write("\r\n");
+    		out.write("# Piston Effect\r\n");
+    		out.write("#	Can pistons move sponges?\r\n");
+    		out.write("pistonMove=" + pistonMove + "\r\n");
     		out.close();
     	} catch (Exception e) {
     		// Not sure what to do? O.o

@@ -80,3 +80,7 @@ restoreWater=false
 #	Ex: 2 x 600 = 1200 milliseconds for water to restore itself.
 #	You only need to change it if your server is really slow.
 flowTimeMult=600
+
+# Piston Effect
+#	Can pistons move sponges?
+pistonMove=true

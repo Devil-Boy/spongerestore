@@ -1,5 +1,7 @@
 package pgDev.bukkit.SpongeRestore;
 
+import java.util.LinkedList;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.*;
@@ -116,4 +118,28 @@ public class SRSuperSpongeListener implements Listener {
     		}
     	}
     }
+	
+	@EventHandler
+	public void onBlockPistonExtend(BlockPistonExtendEvent event) {
+		if (plugin.hasSponges(event.getBlocks())) {
+			if (plugin.pluginSettings.pistonMove) {
+				LinkedList<Block> movedSponges = plugin.getSponges(event.getBlocks());
+				
+			} else {
+				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onBlockPistonRetract(BlockPistonRetractEvent event) {
+		if (event.isSticky() && plugin.isSponge(event.getRetractLocation().getBlock())) {
+			if (plugin.pluginSettings.pistonMove) {
+				plugin.disableSponge(event.getRetractLocation().getBlock());
+				plugin.enableSponge(event.getBlock().getRelative(event.getDirection()));
+			} else {
+				event.setCancelled(true);
+			}
+		}
+	}
 }
