@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -47,7 +48,7 @@ public class SpongeRestore extends JavaPlugin {
 	SRConfig pluginSettings;
 	
 	// Main database
-    public HashMap<String, Integer> spongeAreas = new HashMap<String, Integer>();
+    public ConcurrentHashMap<String, Integer> spongeAreas = new ConcurrentHashMap<String, Integer>();
     
     // File locations
     String pluginMainDir = "./plugins/SpongeRestore";
@@ -159,7 +160,7 @@ public class SpongeRestore extends JavaPlugin {
     }
     
     @SuppressWarnings("unchecked")
-	public HashMap<String, Integer> loadSpongeData() {
+	public ConcurrentHashMap<String, Integer> loadSpongeData() {
     	if (!(new File(spongeDbLocation)).exists()) {
     		// Create the directory and database files!
     		boolean success = (new File(pluginMainDir)).mkdir();
@@ -173,7 +174,7 @@ public class SpongeRestore extends JavaPlugin {
     		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(spongeDbLocation));
     		Object result = ois.readObject();
     		//you can feel free to cast result to HashMap<Player,Boolean> if you know there's that HashMap in the file
-    		return (HashMap<String, Integer>)result;
+    		return (ConcurrentHashMap<String, Integer>)result;
     	} catch(Exception e){
     		e.printStackTrace();
     	}
@@ -319,7 +320,7 @@ public class SpongeRestore extends JavaPlugin {
 						System.out.println("AirSearching: " + x + ", " + y + ", " + z);
 					}
 					if (isAir(currentBlock)) {
-						currentBlock.setTypeId(90, true);
+						currentBlock.setTypeId(36, true); // Technical clear block
 						currentBlock.setTypeId(0, true); // Turn air into air.
 					}
 	    		}

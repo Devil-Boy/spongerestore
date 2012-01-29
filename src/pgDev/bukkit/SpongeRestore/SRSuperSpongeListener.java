@@ -124,22 +124,29 @@ public class SRSuperSpongeListener implements Listener {
 		if (plugin.hasSponges(event.getBlocks())) {
 			if (plugin.pluginSettings.pistonMove) {
 				LinkedList<Block> movedSponges = plugin.getSponges(event.getBlocks());
+				LinkedList<Block> toEnable = new LinkedList<Block>();
+				LinkedList<Block> toDisable = new LinkedList<Block>();
 				if (movedSponges.size() == 1) { // No need to check for sequencial sponges
 					Block spawnge = movedSponges.getLast();
-					plugin.disableSponge((spawnge));
-					plugin.enableSponge(spawnge.getRelative(event.getDirection()));
+					//plugin.disableSponge((spawnge));
+					//plugin.enableSponge(spawnge.getRelative(event.getDirection()));
+					toDisable.add(spawnge);
+					toEnable.add(spawnge.getRelative(event.getDirection()));
 				} else {
 					for (Block spawnge : movedSponges) {
 						// Disable old spot?
 						if (!plugin.isSponge(spawnge.getRelative(event.getDirection().getOppositeFace()))) {
-							plugin.disableSponge((spawnge));
+							//plugin.disableSponge((spawnge));
+							toDisable.add(spawnge);
 						}
 						// Enable new spot?
 						if (!plugin.isSponge(spawnge.getRelative(event.getDirection()))) {
-							plugin.enableSponge(spawnge.getRelative(event.getDirection()));
+							//plugin.enableSponge(spawnge.getRelative(event.getDirection()));
+							toEnable.add(spawnge.getRelative(event.getDirection()));
 						}
 					}
 				}
+				(new Thread(new SRMultiSpongeThread(toEnable, toDisable, plugin))).start();
 			} else {
 				event.setCancelled(true);
 			}
@@ -150,8 +157,13 @@ public class SRSuperSpongeListener implements Listener {
 	public void onBlockPistonRetract(BlockPistonRetractEvent event) {
 		if (event.isSticky() && plugin.isSponge(event.getRetractLocation().getBlock())) {
 			if (plugin.pluginSettings.pistonMove) {
-				plugin.disableSponge(event.getRetractLocation().getBlock());
-				plugin.enableSponge(event.getBlock().getRelative(event.getDirection()));
+				LinkedList<Block> toEnable = new LinkedList<Block>();
+				LinkedList<Block> toDisable = new LinkedList<Block>();
+				//plugin.disableSponge(event.getRetractLocation().getBlock());
+				//plugin.enableSponge(event.getBlock().getRelative(event.getDirection()));
+				toDisable.add(event.getRetractLocation().getBlock());
+				toEnable.add(event.getBlock().getRelative(event.getDirection()));
+				(new Thread(new SRMultiSpongeThread(toEnable, toDisable, plugin))).start();
 			} else {
 				event.setCancelled(true);
 			}
