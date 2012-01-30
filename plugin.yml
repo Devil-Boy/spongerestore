@@ -1,6 +1,6 @@
 name: SpongeRestore
 main: pgDev.bukkit.SpongeRestore.SpongeRestore
-version: 1.4
+version: 1.5
 author: PG Dev Team
 authors: [Devil Boy]
 description: Bringing back the functionality of sponges.
@@ -27,12 +27,16 @@ permissions:
     spongerestore.enable:
         default: op
         description: Can use the "/sponge enable" command.
-        command: "/sponge enable <target/radius> [#]"
+        command: "/sponge enable <target/radius/selection> [#]"
     spongerestore.disable:
         default: op
         description: Can use the "/sponge disable" command.
-        command: "/sponge disable <target/radius> [#]"
+        command: "/sponge disable <target/radius/selection> [#]"
     spongerestore.clear:
         default: op
         description: Can use the "/sponge clear" command.
         command: "/sponge clear"
+    spongerestore.clear.all:
+        default: op
+        description: Can clear the whole sponge database.
+        command: "/sponge clear all"

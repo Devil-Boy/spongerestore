@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,15 +17,18 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import pgDev.bukkit.SpongeRestore.SRConfig;
-
-
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
+
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
+import com.sk89q.worldedit.bukkit.selections.Selection;
 
 /**
  * SpongeRestore for Bukkit
@@ -196,57 +198,107 @@ public class SpongeRestore extends JavaPlugin {
     					System.out.println(player + " used /" + cmd.getName() + " " + args[0] + " " + args[1]);
     				}
     				if (args[0].equalsIgnoreCase("enable") && hasPermissions(player, "spongerestore.enable")) {
-    					if (args[1].equalsIgnoreCase("target") || args[1].equalsIgnoreCase("this") || args[1].equalsIgnoreCase("one")) {
+    					if (args[1].toLowerCase().startsWith("t")) {
     						if (isSponge(player.getTargetBlock(transparentBlocks, 100))) {
     							enableSponge(player.getTargetBlock(transparentBlocks, 100));
-    							player.sendMessage(ChatColor.GREEN + "Successfully enabled sponge!");
+    							player.sendMessage(ChatColor.GOLD + "Successfully enabled sponge!");
     						} else {
-    							player.sendMessage(ChatColor.GREEN + "That is not a sponge.");
+    							player.sendMessage(ChatColor.RED + "That is not a sponge.");
     						}
-    					} else if (args[1].equalsIgnoreCase("radius")) {
-    						if (args.length >2) {
+    					} else if (args[1].toLowerCase().startsWith("r")) {
+    						if (args.length > 2) {
     							try {
-    								player.sendMessage(ChatColor.GREEN + "Sponges enabled: " + convertAreaSponges(player, Integer.parseInt(args[2]), true));
+    								player.sendMessage(ChatColor.GOLD + "Sponges enabled: " + convertAreaSponges(player, Integer.parseInt(args[2]), true));
     							} catch (NumberFormatException e) {
-    								player.sendMessage(ChatColor.GREEN + "The radius must be a number.");
+    								player.sendMessage(ChatColor.RED + "The radius must be a number.");
     							}
     						} else {
     							player.sendMessage(ChatColor.GREEN + "You must specify the radius. For example: /" + cmd.getName() + " enable radius 5");
     						}
+    					} else if (args[1].toLowerCase().startsWith("s")) {
+    						Plugin wePlugin = player.getServer().getPluginManager().getPlugin("WorldEdit");
+    						if (wePlugin == null) {
+    							player.sendMessage(ChatColor.RED + "WorldEdit was not found on this server.");
+    						} else {
+    							Selection chosenArea = ((WorldEditPlugin) wePlugin).getSelection(player);
+    							if (chosenArea instanceof CuboidSelection) {
+    								LinkedList<Block> toEnable = getSponges(getBlocksInSelection(chosenArea));
+    								LinkedList<Block> toDisable = new LinkedList<Block>();
+    								(new Thread(new SRMultiSpongeThread(toEnable, toDisable, this))).start();
+    								player.sendMessage(ChatColor.GOLD + "Sponges being enabled: " + toEnable.size());
+    							} else {
+    								player.sendMessage(ChatColor.RED + "Your selection must be cuboid.");
+    							}
+    						}
     					} else {
-    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " enable <target/radius #>");
-    						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable just the sponge you're looking at, or all sponges within a certain radius.");
+    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " enable <target/radius #/selection>");
+    						player.sendMessage(ChatColor.GREEN + "Choose whether you want to enable just the sponge you're looking at, or all sponges within a certain radius.");
     					}
     				} else if (args[0].equalsIgnoreCase("disable") && hasPermissions(player, "spongerestore.disable")) {
-    					if (args[1].equalsIgnoreCase("target") || args[1].equalsIgnoreCase("this") || args[1].equalsIgnoreCase("one")) {
+    					if (args[1].toLowerCase().startsWith("t")) {
     						Block targetBlock = player.getTargetBlock(transparentBlocks, 100);
     						if (isSponge(targetBlock)) {
     							disableSponge(targetBlock);
-    							player.sendMessage(ChatColor.GREEN + "Successfully disabled sponge!");
+    							player.sendMessage(ChatColor.GOLD + "Successfully disabled sponge!");
     						} else {
-    							player.sendMessage(ChatColor.GREEN + "That is not a sponge.");
+    							player.sendMessage(ChatColor.RED + "That is not a sponge.");
     						}
-    					} else if (args[1].startsWith("radius")) {
+    					} else if (args[1].toLowerCase().startsWith("r")) {
     						if (args.length >2) {
     							try {
-    								player.sendMessage(ChatColor.GREEN + "Sponges disabled: " + convertAreaSponges(player, Integer.parseInt(args[2]), false));
+    								player.sendMessage(ChatColor.GOLD + "Sponges disabled: " + convertAreaSponges(player, Integer.parseInt(args[2]), false));
     							} catch (NumberFormatException e) {
-    								player.sendMessage(ChatColor.GREEN + "The radius must be a number.");
+    								player.sendMessage(ChatColor.RED + "The radius must be a number.");
     							}
     						} else {
     							player.sendMessage(ChatColor.GREEN + "You must specify the radius. For example: /" + cmd.getName() + " disable radius 5");
     						}
+    					} else if (args[1].toLowerCase().startsWith("s")) {
+    						Plugin wePlugin = player.getServer().getPluginManager().getPlugin("WorldEdit");
+    						if (wePlugin == null) {
+    							player.sendMessage(ChatColor.RED + "WorldEdit was not found on this server.");
+    						} else {
+    							Selection chosenArea = ((WorldEditPlugin) wePlugin).getSelection(player);
+    							if (chosenArea instanceof CuboidSelection) {
+    								LinkedList<Block> toDisable = getSponges(getBlocksInSelection(chosenArea));
+    								LinkedList<Block> toEnable = new LinkedList<Block>();
+    								(new Thread(new SRMultiSpongeThread(toEnable, toDisable, this))).start();
+    								player.sendMessage(ChatColor.GOLD + "Sponges being disabled: " + toDisable.size());
+    							} else {
+    								player.sendMessage(ChatColor.RED + "Your selection must be cuboid.");
+    							}
+    						}
     					} else {
-    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " disable <target/radius #>");
-    						player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable just the sponge you're looking at, or all sponges within a certain radius.");
+    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " disable <target/radius #/selection>");
+    						player.sendMessage(ChatColor.GREEN + "Choose whether you want to enable just the sponge you're looking at, or all sponges within a certain radius.");
     					}
     				} else if (args[0].equalsIgnoreCase("clear") && hasPermissions(player, "spongerestore.clear")) {
-    					spongeAreas.clear();
-						player.sendMessage(ChatColor.GREEN + "spongeAreas database cleared!");
+    					if (args[1].equalsIgnoreCase("all")) { // Don't let them mess up!
+    						if (hasPermissions(player, "spongerestore.clear.all")) {
+    							spongeAreas.clear();
+        						player.sendMessage(ChatColor.GOLD + "spongeAreas database cleared!");
+    						} else {
+    							player.sendMessage(ChatColor.RED + "You do not have permissions to clear the whole sponge database!");
+    						}
+    					} else if (args[1].toLowerCase().startsWith("s")) {
+    						Plugin wePlugin = player.getServer().getPluginManager().getPlugin("WorldEdit");
+    						if (wePlugin == null) {
+    							player.sendMessage(ChatColor.RED + "WorldEdit was not found on this server.");
+    						} else {
+    							Selection chosenArea = ((WorldEditPlugin) wePlugin).getSelection(player);
+    							if (chosenArea instanceof CuboidSelection) {
+    								int num = completeRemoveBlocksFromAreas(getBlocksInSelection(chosenArea));
+    								player.sendMessage(ChatColor.GOLD + "Water restricted areas removed: " + num);
+    							} else {
+    								player.sendMessage(ChatColor.RED + "Your selection must be cuboid.");
+    							}
+    						}
+    					} else {
+    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " clear <all/selection>");
+    						player.sendMessage(ChatColor.GREEN + "Clear the whole databse? Or just a WorldEdit selection?");
+    					}
     				} else {
     					player.sendMessage(ChatColor.GREEN + "Either that command doesn't exist, or you don't have the permissions to use it.");
-    					//player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " <enable/disable/clear>");
-						//player.sendMessage(ChatColor.GREEN + "Chooose whether you want to enable or disable sponges.");
     				}
     				
     			} else {
@@ -364,8 +416,16 @@ public class SpongeRestore extends JavaPlugin {
     	}
     }
     
-    public void completeRemoveFromSpongeAreas(String coords) {
-    	spongeAreas.remove(coords);
+    public int completeRemoveBlocksFromAreas(LinkedList<Block> blawks) {
+    	int output = 0;
+    	for (Block blawk : blawks) {
+    		String coords = getBlockCoords(blawk);
+    		if (spongeAreas.containsKey(coords)) {
+    			spongeAreas.remove(getBlockCoords(blawk));
+    			output++;
+    		}
+    	}
+    	return output;
     }
     
     public void markAsRemoved(String coords) {
@@ -516,5 +576,19 @@ public class SpongeRestore extends JavaPlugin {
     	return output;
     }
     
+    public LinkedList<Block> getBlocksInSelection(Selection sel) {
+    	LinkedList<Block> output = new LinkedList<Block>();
+    	World w = sel.getWorld();
+    	Location minPoint = sel.getMinimumPoint();
+    	Location maxPoint = sel.getMaximumPoint();
+    	for (int x=minPoint.getBlockX(); x<=maxPoint.getBlockX(); x++) {
+    		for (int y=minPoint.getBlockY(); y<=maxPoint.getBlockY(); y++) {
+    			for (int z=minPoint.getBlockZ(); z<=maxPoint.getBlockZ(); z++) {
+    	    		output.add(w.getBlockAt(x, y, z));
+    	    	}
+        	}
+    	}
+    	return output;
+    }
 }
 
