@@ -184,19 +184,12 @@ public class SpongeRestore extends JavaPlugin {
     }
     
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-    	if(cmd.getName().equalsIgnoreCase("sponge") || cmd.getName().equalsIgnoreCase("sponges") || cmd.getName().equalsIgnoreCase("sr")) {
-    		if (sender instanceof Player) {
-    			Player player = (Player)sender;
-    			if(hasPermissions(player, "spongerestore.enable") || hasPermissions(player, "spongerestore.disable") || hasPermissions(player, "spongerestore.clear")) {
-	    			if (args.length <2) {
-	    				if (args.length <1) {
-	    					args = new String[] {"", "", ""};
-	    				}
-	    				args = new String[] {args[0], "", ""};
-	    			}
-    				if (debug) {
-    					System.out.println(player + " used /" + cmd.getName() + " " + args[0] + " " + args[1]);
-    				}
+    	if (sender instanceof Player) {
+			Player player = (Player)sender;
+			if(hasPermissions(player, "spongerestore.enable") || hasPermissions(player, "spongerestore.disable") || hasPermissions(player, "spongerestore.clear")) {
+    			if (args.length == 0) { // Give aide!
+    				
+    			} else {
     				if (args[0].equalsIgnoreCase("enable") && hasPermissions(player, "spongerestore.enable")) {
     					if (args[1].toLowerCase().startsWith("t")) {
     						if (isSponge(player.getTargetBlock(transparentBlocks, 100))) {
@@ -244,7 +237,7 @@ public class SpongeRestore extends JavaPlugin {
     							player.sendMessage(ChatColor.RED + "That is not a sponge.");
     						}
     					} else if (args[1].toLowerCase().startsWith("r")) {
-    						if (args.length >2) {
+    						if (args.length > 2) {
     							try {
     								player.sendMessage(ChatColor.GOLD + "Sponges disabled: " + convertAreaSponges(player, Integer.parseInt(args[2]), false));
     							} catch (NumberFormatException e) {
@@ -293,21 +286,32 @@ public class SpongeRestore extends JavaPlugin {
     								player.sendMessage(ChatColor.RED + "Your selection must be cuboid.");
     							}
     						}
+    					} else if (args[1].toLowerCase().startsWith("w")) { // wants to wipe a world
+    						if (args.length > 3) {
+    							World chosenWorld = getServer().getWorld(args[2]);
+    							if (chosenWorld == null) {
+    								player.sendMessage(ChatColor.RED + "The world you specified was not found on this server.");
+    							} else {
+    								spongeAreas = wipeWorld(spongeAreas, chosenWorld.getName());
+    								saveSpongeData();
+    								player.sendMessage(ChatColor.GOLD + "All sponge areas cleared from world: " + chosenWorld.getName());
+    							}
+    						} else {
+    							player.sendMessage(ChatColor.GREEN + "You must specify the world. For example: /" + cmd.getName() + " clear world world_nether");
+    						}
     					} else {
-    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " clear <all/selection>");
+    						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " clear <all/selection/world> [worldname]");
     						player.sendMessage(ChatColor.GREEN + "Clear the whole databse? Or just a WorldEdit selection?");
     					}
     				} else {
     					player.sendMessage(ChatColor.GREEN + "Either that command doesn't exist, or you don't have the permissions to use it.");
     				}
-    				
-    			} else {
-    				player.sendMessage(ChatColor.GREEN + "You do not have permission to use this command.");
     			}
-    		}
-    		return true;
-    	}
-    	return false;
+			} else {
+				player.sendMessage(ChatColor.GREEN + "You do not have permission to use this command.");
+			}
+		}
+		return true;
     }
     
     // Permissions Methods
@@ -589,6 +593,15 @@ public class SpongeRestore extends JavaPlugin {
         	}
     	}
     	return output;
+    }
+    
+    public ConcurrentHashMap<String, Integer> wipeWorld(ConcurrentHashMap<String, Integer> originalDB, String world) {
+    	for (String coord : originalDB.keySet()) {
+    		if (coord.split(".")[0].equals(world)) {
+    			originalDB.remove(coord);
+    		}
+    	}
+    	return originalDB;
     }
 }
 
