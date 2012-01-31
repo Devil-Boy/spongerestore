@@ -1,6 +1,6 @@
 name: SpongeRestore
 main: pgDev.bukkit.SpongeRestore.SpongeRestore
-version: 1.5
+version: 1.6
 author: PG Dev Team
 authors: [Devil Boy]
 description: Bringing back the functionality of sponges.
@@ -35,8 +35,8 @@ permissions:
     spongerestore.clear:
         default: op
         description: Can use the "/sponge clear" command.
-        command: "/sponge clear"
+        command: "/sponge clear <all/selection/world>"
     spongerestore.clear.all:
         default: op
-        description: Can clear the whole sponge database.
-        command: "/sponge clear all"
+        description: Can clear worlds of sponge areas.
+        command: "/sponge clear <all/world> [worldname]"

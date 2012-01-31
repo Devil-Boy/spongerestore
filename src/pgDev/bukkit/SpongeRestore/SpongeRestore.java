@@ -188,7 +188,20 @@ public class SpongeRestore extends JavaPlugin {
 			Player player = (Player)sender;
 			if(hasPermissions(player, "spongerestore.enable") || hasPermissions(player, "spongerestore.disable") || hasPermissions(player, "spongerestore.clear")) {
     			if (args.length == 0) { // Give aide!
-    				
+    				player.sendMessage(ChatColor.GREEN + "SpongeRestore Commands:");
+    				if (hasPermissions(player, "spongerestore.enable")) {
+    					player.sendMessage(ChatColor.GREEN + "/sponge enable <target/radius/selection> [#]");
+    				}
+    				if (hasPermissions(player, "spongerestore.disable")) {
+    					player.sendMessage(ChatColor.GREEN + "/sponge disable <target/radius/selection> [#]");
+    				}
+					if (hasPermissions(player, "spongerestore.clear")) {
+						if (hasPermissions(player, "spongerestore.clear.all")) {
+							player.sendMessage(ChatColor.GREEN + "/sponge clear <all/selection/world> [worldname]");
+						} else {
+							player.sendMessage(ChatColor.GREEN + "/sponge clear selection");
+						}
+					}
     			} else {
     				if (args[0].equalsIgnoreCase("enable") && hasPermissions(player, "spongerestore.enable")) {
     					if (args[1].toLowerCase().startsWith("t")) {
@@ -267,11 +280,11 @@ public class SpongeRestore extends JavaPlugin {
     					}
     				} else if (args[0].equalsIgnoreCase("clear") && hasPermissions(player, "spongerestore.clear")) {
     					if (args[1].equalsIgnoreCase("all")) { // Don't let them mess up!
-    						if (hasPermissions(player, "spongerestore.clear.all")) {
+    						if (hasPermissions(player, "spongerestore.clear.world.all")) {
     							spongeAreas.clear();
         						player.sendMessage(ChatColor.GOLD + "spongeAreas database cleared!");
     						} else {
-    							player.sendMessage(ChatColor.RED + "You do not have permissions to clear the whole sponge database!");
+    							player.sendMessage(ChatColor.RED + "You do not have permission to clear the whole sponge database!");
     						}
     					} else if (args[1].toLowerCase().startsWith("s")) {
     						Plugin wePlugin = player.getServer().getPluginManager().getPlugin("WorldEdit");
@@ -287,17 +300,21 @@ public class SpongeRestore extends JavaPlugin {
     							}
     						}
     					} else if (args[1].toLowerCase().startsWith("w")) { // wants to wipe a world
-    						if (args.length > 3) {
-    							World chosenWorld = getServer().getWorld(args[2]);
-    							if (chosenWorld == null) {
-    								player.sendMessage(ChatColor.RED + "The world you specified was not found on this server.");
-    							} else {
-    								spongeAreas = wipeWorld(spongeAreas, chosenWorld.getName());
-    								saveSpongeData();
-    								player.sendMessage(ChatColor.GOLD + "All sponge areas cleared from world: " + chosenWorld.getName());
-    							}
+    						if (hasPermissions(player, "spongerestore.clear.all")) {
+    							if (args.length > 3) {
+        							World chosenWorld = getServer().getWorld(args[2]);
+        							if (chosenWorld == null) {
+        								player.sendMessage(ChatColor.RED + "The world you specified was not found on this server.");
+        							} else {
+        								spongeAreas = wipeWorld(spongeAreas, chosenWorld.getName());
+        								saveSpongeData();
+        								player.sendMessage(ChatColor.GOLD + "All sponge areas cleared from world: " + chosenWorld.getName());
+        							}
+        						} else {
+        							player.sendMessage(ChatColor.GREEN + "You must specify the world. For example: /" + cmd.getName() + " clear world world_nether");
+        						}
     						} else {
-    							player.sendMessage(ChatColor.GREEN + "You must specify the world. For example: /" + cmd.getName() + " clear world world_nether");
+    							player.sendMessage(ChatColor.RED + "You do not have permission to clear worlds of sponges.");
     						}
     					} else {
     						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " clear <all/selection/world> [worldname]");
