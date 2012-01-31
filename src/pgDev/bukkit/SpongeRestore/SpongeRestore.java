@@ -301,7 +301,7 @@ public class SpongeRestore extends JavaPlugin {
     						}
     					} else if (args[1].toLowerCase().startsWith("w")) { // wants to wipe a world
     						if (hasPermissions(player, "spongerestore.clear.all")) {
-    							if (args.length > 3) {
+    							if (args.length > 2) {
         							World chosenWorld = getServer().getWorld(args[2]);
         							if (chosenWorld == null) {
         								player.sendMessage(ChatColor.RED + "The world you specified was not found on this server.");
@@ -608,7 +608,7 @@ public class SpongeRestore extends JavaPlugin {
     
     public ConcurrentHashMap<String, Integer> wipeWorld(ConcurrentHashMap<String, Integer> originalDB, String world) {
     	for (String coord : originalDB.keySet()) {
-    		if (coord.split(".")[0].equals(world)) {
+    		if (coord.split("\\.")[0].equals(world)) {
     			originalDB.remove(coord);
     		}
     	}

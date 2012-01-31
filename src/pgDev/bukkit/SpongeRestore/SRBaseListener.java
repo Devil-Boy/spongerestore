@@ -97,6 +97,9 @@ public class SRBaseListener implements Listener {
 	// Save the sponge database
 	@EventHandler
 	public void onWorldSave(WorldSaveEvent event) {
+		if (plugin.debug) {
+			System.out.println("World saved, along with sponges!");
+		}
 		plugin.saveSpongeData();
 	}
 }
