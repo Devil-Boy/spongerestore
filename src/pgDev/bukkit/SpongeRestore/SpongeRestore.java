@@ -371,9 +371,6 @@ public class SpongeRestore extends JavaPlugin {
 	    		}
     		}
 		}
-		if (!pluginSettings.reduceOverhead) {
-			saveSpongeData();
-		}
     }
 	
 	public LinkedList<String> disableSponge(Block theSponge) {
@@ -398,9 +395,6 @@ public class SpongeRestore extends JavaPlugin {
 					}
 	    		}
     		}
-		}
-		if (!pluginSettings.reduceOverhead) {
-			saveSpongeData();
 		}
 		return markedBlocks;
 	}

@@ -34,36 +34,6 @@ public class SRSuperSpongeListener implements Listener {
     	}
     }
 	
-	@EventHandler
-	public void onBlockBreak(BlockBreakEvent event) {
-    	if (plugin.isSponge(event.getBlock())) {
-    		Block wasBlock = event.getBlock();
-    		if (plugin.debug) {
-    			System.out.println("Sponge destroyed!");
-    		}
-    		
-    		if (plugin.pluginSettings.restoreWater) {
-    			SRFlowTimer flowTimer = new SRFlowTimer(plugin, plugin.disableSponge(wasBlock));
-    			Thread timerThread = new Thread(flowTimer);
-    			timerThread.start();
-    			plugin.flowTimers.add(flowTimer);
-    		} else {
-    			plugin.disableSponge(wasBlock);
-    		}
-    	} else if (plugin.isIce(event.getBlock())) {
-    		Block wasBlock = event.getBlock();
-    		if(plugin.debug) {
-    			System.out.println("Ice destroyed!");
-    		}
-    		// Check if the ice was within a sponge's area.
-        	if (!plugin.pluginSettings.canPlaceWater && plugin.spongeAreas.containsKey(plugin.getBlockCoords(wasBlock))) {
-            	wasBlock.setType(Material.AIR);
-            	if (plugin.debug) {
-                	System.out.println("Melted ice gone now :D");
-            	}
-        	}
-    	}
-    }
 	
 	@EventHandler
 	public void onBlockIgnite(BlockIgniteEvent event) {

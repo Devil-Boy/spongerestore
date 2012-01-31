@@ -48,14 +48,6 @@ absorbFire=false
 #	eternal burning bush effect.
 attackFire=false
 
-# Reduce Overhead
-#	I recommand you keep this off. In normal circumstances
-#	the sponge database is saved on every sponge break
-#	and place, thus keeping the plugin safe for server 
-#	crashes. With this option turned on, the sponge database
-#	will only be saved on plugin disable (clean exits).
-reduceOverhead=false
-
 # Affected Radius
 #	Here you can choose how large the area the sponge affects
 #	will be. It is based on the numbers of blocks away from

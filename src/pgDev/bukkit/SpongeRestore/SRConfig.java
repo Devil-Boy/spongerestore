@@ -29,7 +29,6 @@ public class SRConfig {
 	boolean craftableSponges = true;
 	boolean absorbLava = false;
 	boolean absorbFire = false;
-	boolean reduceOverhead = false;
 	int spongeRadius = 2;
 	boolean attackFire = false;
 	boolean restoreWater = false;
@@ -57,7 +56,6 @@ public class SRConfig {
         craftableSponges = getBoolean("craftableSponges", true);
         absorbLava = getBoolean("absorbLava", false);
         absorbFire = getBoolean("absorbFire", false);
-        reduceOverhead = getBoolean("reduceOverhead", false);
         spongeRadius = getInt("spongeRadius", 2);
         attackFire = getBoolean("attackFire", false);
         restoreWater = getBoolean("restoreWater", false);
@@ -276,14 +274,6 @@ public class SRConfig {
     		out.write("#	their effective area, adequately preventing the\r\n");
     		out.write("#	eternal burning bush effect.\r\n");
     		out.write("attackFire=" + attackFire + "\r\n");
-    		out.write("\r\n");
-    		out.write("# Reduce Overhead\r\n");
-    		out.write("#	I recommand you keep this off. In normal circumstances\r\n");
-    		out.write("#	the sponge database is saved on every sponge break\r\n");
-    		out.write("#	and place, thus keeping the plugin safe for server\r\n");
-    		out.write("#	crashes. With this option turned on, the sponge database\r\n");
-    		out.write("#	will only be saved on plugin disable (clean exits).\r\n");
-    		out.write("reduceOverhead=" + reduceOverhead +"\r\n");
     		out.write("\r\n");
     		out.write("# Affected Radius\r\n");
     		out.write("#	Here you can choose how large the area the sponge affects\r\n");

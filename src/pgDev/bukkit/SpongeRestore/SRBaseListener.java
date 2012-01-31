@@ -3,8 +3,10 @@ package pgDev.bukkit.SpongeRestore;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.*;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.world.WorldSaveEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class SRBaseListener implements Listener {
@@ -59,4 +61,42 @@ public class SRBaseListener implements Listener {
         	event.setItemStack(new ItemStack(325));
     	}
     }
+	
+	// Remove broken sponges from database
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent event) {
+    	if (plugin.isSponge(event.getBlock())) {
+    		Block wasBlock = event.getBlock();
+    		if (plugin.debug) {
+    			System.out.println("Sponge destroyed!");
+    		}
+    		
+    		if (plugin.pluginSettings.restoreWater) {
+    			SRFlowTimer flowTimer = new SRFlowTimer(plugin, plugin.disableSponge(wasBlock));
+    			Thread timerThread = new Thread(flowTimer);
+    			timerThread.start();
+    			plugin.flowTimers.add(flowTimer);
+    		} else {
+    			plugin.disableSponge(wasBlock);
+    		}
+    	} else if (plugin.isIce(event.getBlock())) {
+    		Block wasBlock = event.getBlock();
+    		if(plugin.debug) {
+    			System.out.println("Ice destroyed!");
+    		}
+    		// Check if the ice was within a sponge's area.
+        	if (!plugin.pluginSettings.canPlaceWater && plugin.spongeAreas.containsKey(plugin.getBlockCoords(wasBlock))) {
+            	wasBlock.setType(Material.AIR);
+            	if (plugin.debug) {
+                	System.out.println("Melted ice gone now :D");
+            	}
+        	}
+    	}
+    }
+	
+	// Save the sponge database
+	@EventHandler
+	public void onWorldSave(WorldSaveEvent event) {
+		plugin.saveSpongeData();
+	}
 }
