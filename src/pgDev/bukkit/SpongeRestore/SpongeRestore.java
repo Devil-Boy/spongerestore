@@ -1,14 +1,7 @@
 package pgDev.bukkit.SpongeRestore;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.block.Block;
@@ -175,8 +168,12 @@ public class SpongeRestore extends JavaPlugin {
     	try{
     		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(spongeDbLocation));
     		Object result = ois.readObject();
-    		//you can feel free to cast result to HashMap<Player,Boolean> if you know there's that HashMap in the file
-    		return (ConcurrentHashMap<String, Integer>)result;
+    		if (result instanceof ConcurrentHashMap) {
+    			return (ConcurrentHashMap<String, Integer>)result;
+    		} else if (result instanceof HashMap) {
+    			System.out.println("Updated sponge database to ConcurrentHashMap.");
+    			return new ConcurrentHashMap<String, Integer>((Map<String, Integer>)result);
+    		}
     	} catch(Exception e){
     		e.printStackTrace();
     	}
