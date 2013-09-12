@@ -16,9 +16,6 @@ import org.bukkit.World;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
-
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
@@ -53,9 +50,6 @@ public class SpongeRestore extends JavaPlugin {
     
     // Debug switch
 	public boolean debug = false;
-	
-	// Legacy permissions handler
-	private static PermissionHandler Permissions;
 	
 	// Water return flow timers
 	public LinkedList<SRFlowTimer> flowTimers = new LinkedList<SRFlowTimer>();
@@ -130,9 +124,6 @@ public class SpongeRestore extends JavaPlugin {
 	        getServer().addRecipe(pluginSettings.spongeRecipe);
     	}
     	
-    	// Permissions turn on!
-    	setupPermissions();
-    	
         // EXAMPLE: Custom code, here we just output some info so we can check all is well
         PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
@@ -165,8 +156,9 @@ public class SpongeRestore extends JavaPlugin {
     		saveSpongeData();
     	}
     	
+    	ObjectInputStream ois = null;
     	try{
-    		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(spongeDbLocation));
+    		ois = new ObjectInputStream(new FileInputStream(spongeDbLocation));
     		Object result = ois.readObject();
     		if (result instanceof ConcurrentHashMap) {
     			return (ConcurrentHashMap<String, Integer>)result;
@@ -176,6 +168,14 @@ public class SpongeRestore extends JavaPlugin {
     		}
     	} catch(Exception e){
     		e.printStackTrace();
+    	} finally {
+    		if (ois != null) {
+    			try {
+					ois.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+    		}
     	}
 		return spongeAreas;
     }
@@ -183,24 +183,24 @@ public class SpongeRestore extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
     	if (sender instanceof Player) {
 			Player player = (Player)sender;
-			if(hasPermissions(player, "spongerestore.enable") || hasPermissions(player, "spongerestore.disable") || hasPermissions(player, "spongerestore.clear")) {
+			if(player.hasPermission("spongerestore.enable") || player.hasPermission("spongerestore.disable") || player.hasPermission("spongerestore.clear")) {
     			if (args.length == 0) { // Give aide!
     				player.sendMessage(ChatColor.GREEN + "SpongeRestore Commands:");
-    				if (hasPermissions(player, "spongerestore.enable")) {
+    				if (player.hasPermission("spongerestore.enable")) {
     					player.sendMessage(ChatColor.GREEN + "/sponge enable <target/radius/selection> [#]");
     				}
-    				if (hasPermissions(player, "spongerestore.disable")) {
+    				if (player.hasPermission("spongerestore.disable")) {
     					player.sendMessage(ChatColor.GREEN + "/sponge disable <target/radius/selection> [#]");
     				}
-					if (hasPermissions(player, "spongerestore.clear")) {
-						if (hasPermissions(player, "spongerestore.clear.all")) {
+					if (player.hasPermission("spongerestore.clear")) {
+						if (player.hasPermission("spongerestore.clear.all")) {
 							player.sendMessage(ChatColor.GREEN + "/sponge clear <all/selection/world> [worldname]");
 						} else {
 							player.sendMessage(ChatColor.GREEN + "/sponge clear selection");
 						}
 					}
     			} else {
-    				if (args[0].equalsIgnoreCase("enable") && hasPermissions(player, "spongerestore.enable")) {
+    				if (args[0].equalsIgnoreCase("enable") && player.hasPermission("spongerestore.enable")) {
     					if (args[1].toLowerCase().startsWith("t")) {
     						if (isSponge(player.getTargetBlock(transparentBlocks, 100))) {
     							enableSponge(player.getTargetBlock(transparentBlocks, 100));
@@ -237,7 +237,7 @@ public class SpongeRestore extends JavaPlugin {
     						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " enable <target/radius #/selection>");
     						player.sendMessage(ChatColor.GREEN + "Choose whether you want to enable just the sponge you're looking at, or all sponges within a certain radius.");
     					}
-    				} else if (args[0].equalsIgnoreCase("disable") && hasPermissions(player, "spongerestore.disable")) {
+    				} else if (args[0].equalsIgnoreCase("disable") && player.hasPermission("spongerestore.disable")) {
     					if (args[1].toLowerCase().startsWith("t")) {
     						Block targetBlock = player.getTargetBlock(transparentBlocks, 100);
     						if (isSponge(targetBlock)) {
@@ -275,9 +275,9 @@ public class SpongeRestore extends JavaPlugin {
     						player.sendMessage(ChatColor.GREEN + "Usage: /" + cmd.getName() + " disable <target/radius #/selection>");
     						player.sendMessage(ChatColor.GREEN + "Choose whether you want to enable just the sponge you're looking at, or all sponges within a certain radius.");
     					}
-    				} else if (args[0].equalsIgnoreCase("clear") && hasPermissions(player, "spongerestore.clear")) {
+    				} else if (args[0].equalsIgnoreCase("clear") && player.hasPermission("spongerestore.clear")) {
     					if (args[1].equalsIgnoreCase("all")) { // Don't let them mess up!
-    						if (hasPermissions(player, "spongerestore.clear.world.all")) {
+    						if (player.hasPermission("spongerestore.clear.world.all")) {
     							spongeAreas.clear();
         						player.sendMessage(ChatColor.GOLD + "spongeAreas database cleared!");
     						} else {
@@ -297,7 +297,7 @@ public class SpongeRestore extends JavaPlugin {
     							}
     						}
     					} else if (args[1].toLowerCase().startsWith("w")) { // wants to wipe a world
-    						if (hasPermissions(player, "spongerestore.clear.all")) {
+    						if (player.hasPermission("spongerestore.clear.all")) {
     							if (args.length > 2) {
         							World chosenWorld = getServer().getWorld(args[2]);
         							if (chosenWorld == null) {
@@ -326,26 +326,6 @@ public class SpongeRestore extends JavaPlugin {
 			}
 		}
 		return true;
-    }
-    
-    // Permissions Methods
-    private void setupPermissions() {
-        Plugin permissions = this.getServer().getPluginManager().getPlugin("Permissions");
-
-        if (Permissions == null) {
-            if (permissions != null) {
-                Permissions = ((Permissions)permissions).getHandler();
-            } else {
-            }
-        }
-    }
-    
-    public static boolean hasPermissions(Player player, String node) {
-        if (Permissions != null) {
-        	return Permissions.has(player, node);
-        } else {
-            return player.hasPermission(node);
-        }
     }
     
     // Non-Static Functions
