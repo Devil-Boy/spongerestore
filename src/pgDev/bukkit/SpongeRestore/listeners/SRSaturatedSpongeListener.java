@@ -1,8 +1,10 @@
-package pgDev.bukkit.SpongeRestore;
+package pgDev.bukkit.SpongeRestore.listeners;
 
 import org.bukkit.event.*;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
+
+import pgDev.bukkit.SpongeRestore.SpongeRestore;
 
 public class SRSaturatedSpongeListener implements Listener {
 	final SpongeRestore plugin;
@@ -13,14 +15,14 @@ public class SRSaturatedSpongeListener implements Listener {
 	
 	@EventHandler
 	public void onBlockPistonExtend(BlockPistonExtendEvent event) {
-		if (!plugin.pluginSettings.pistonMove && plugin.hasSponges(event.getBlocks())) {
+		if (!SpongeRestore.pluginSettings.pistonMove && plugin.hasSponges(event.getBlocks())) {
 			event.setCancelled(true);
 		}
 	}
 	
 	@EventHandler
 	public void onBlockPistonRetract(BlockPistonRetractEvent event) {
-		if (!plugin.pluginSettings.pistonMove && event.isSticky() && plugin.isSponge(event.getRetractLocation().getBlock())) {
+		if (!SpongeRestore.pluginSettings.pistonMove && event.isSticky() && plugin.isSponge(event.getRetractLocation().getBlock())) {
 			event.setCancelled(true);
 		}
 	}

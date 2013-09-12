@@ -76,3 +76,8 @@ flowTimeMult=600
 # Piston Effect
 #	Can pistons move sponges?
 pistonMove=true
+
+# Threaded Database Updates
+#	With this enabled, the action of saving the sponge database
+#	will be done in a separate thread. This prevents server lag.
+threadedSpongeSave=true

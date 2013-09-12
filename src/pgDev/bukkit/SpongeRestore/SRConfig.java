@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.*;
+import java.util.logging.Level;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -22,18 +23,19 @@ public class SRConfig {
 	public boolean upToDate = true;
 	
 	// List of Config Options
-	LinkedList<String> excludedWorlds = new LinkedList<String>();
-	boolean spongeSaturation = false;
-	boolean canPlaceWater = false;
-	boolean debug = false;
-	boolean craftableSponges = true;
-	boolean absorbLava = false;
-	boolean absorbFire = false;
-	int spongeRadius = 2;
-	boolean attackFire = false;
-	boolean restoreWater = false;
-	int flowTimeMult = 600;
-	boolean pistonMove = true;
+	public LinkedList<String> excludedWorlds = new LinkedList<String>();
+	public boolean spongeSaturation = false;
+	public boolean canPlaceWater = false;
+	public boolean debug = false;
+	public boolean craftableSponges = true;
+	public boolean absorbLava = false;
+	public boolean absorbFire = false;
+	public int spongeRadius = 2;
+	public boolean attackFire = false;
+	public boolean restoreWater = false;
+	public int flowTimeMult = 600;
+	public boolean pistonMove = true;
+	public boolean threadedSpongeSave = true;
 	
 	// The Sponge Crafting Recipe
 	ShapedRecipe spongeRecipe;
@@ -61,6 +63,7 @@ public class SRConfig {
         restoreWater = getBoolean("restoreWater", false);
         flowTimeMult = getInt("flowTimeMult", 600);
         pistonMove = getBoolean("pistonMove", true);
+        threadedSpongeSave = getBoolean("threadedSpongeSave", true);
         
         if (customRecipe) {
         	spongeRecipe = getRecipe();
@@ -127,7 +130,7 @@ public class SRConfig {
         	values = thedefault;
         }
         if(plugin.debug) {
-        	System.out.println("List from file: " + values);
+        	SpongeRestore.logger.log(Level.INFO, "List from file: " + values);
         }
         if(!values.equals("")) {
             String[] tokens = values.split(",");
@@ -303,6 +306,11 @@ public class SRConfig {
     		out.write("# Piston Effect\r\n");
     		out.write("#	Can pistons move sponges?\r\n");
     		out.write("pistonMove=" + pistonMove + "\r\n");
+    		out.write("\r\n");
+    		out.write("# Threaded Database Updates\r\n");
+    		out.write("#	With this enabled, the action of saving the sponge database\r\n");
+    		out.write("#	will be done in a separate thread. This prevents server lag.\r\n");
+    		out.write("threadedSpongeSave=" + threadedSpongeSave + "\r\n");
     		out.close();
     	} catch (Exception e) {
     		// Not sure what to do? O.o

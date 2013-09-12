@@ -1,6 +1,7 @@
 package pgDev.bukkit.SpongeRestore;
 
 import java.util.LinkedList;
+import java.util.logging.Level;
 
 /**
  * This is a thread that clears the deleted sponge area
@@ -18,13 +19,13 @@ public class SRFlowTimer implements Runnable {
 		this.plugin = plugin;
 		this.removedCoords = removedCoords;
 		
-		waittime = plugin.pluginSettings.spongeRadius * plugin.pluginSettings.flowTimeMult;
+		waittime = SpongeRestore.pluginSettings.spongeRadius * SpongeRestore.pluginSettings.flowTimeMult;
 	}
 	
 	@Override
 	public void run() {
-		if (plugin.pluginSettings.debug) {
-			System.out.println("FlowTimer running!");
+		if (SpongeRestore.pluginSettings.debug) {
+			SpongeRestore.logger.log(Level.INFO, "FlowTimer running!");
 		}
 		try {
 			Thread.sleep(waittime);
@@ -33,8 +34,8 @@ public class SRFlowTimer implements Runnable {
 		for (String currentCoord : removedCoords) {
 			plugin.removeFromSpongeAreas(currentCoord);
 		}
-		if (plugin.pluginSettings.debug) {
-			System.out.println("Water is out of time!");
+		if (SpongeRestore.pluginSettings.debug) {
+			SpongeRestore.logger.log(Level.INFO, "Water is out of time!");
 		}
 		plugin.flowTimers.remove(this);
 	}

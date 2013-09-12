@@ -3,6 +3,10 @@ package pgDev.bukkit.SpongeRestore;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -15,6 +19,10 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import pgDev.bukkit.SpongeRestore.listeners.SRBaseListener;
+import pgDev.bukkit.SpongeRestore.listeners.SRSaturatedSpongeListener;
+import pgDev.bukkit.SpongeRestore.listeners.SRSuperSpongeListener;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
@@ -31,13 +39,16 @@ import com.sk89q.worldedit.bukkit.selections.Selection;
  */
 
 public class SpongeRestore extends JavaPlugin {
+	// Logger
+	public static Logger logger;
+	
 	// Listeners
 	public final SRBaseListener baseListener = new SRBaseListener(this);
 	public final SRSaturatedSpongeListener saturatedListener = new SRSaturatedSpongeListener(this);
 	public final SRSuperSpongeListener superListener = new SRSuperSpongeListener(this);
     
 	// Configuration
-	SRConfig pluginSettings;
+	public static SRConfig pluginSettings;
 	
 	// Main database
     public ConcurrentHashMap<String, Integer> spongeAreas = new ConcurrentHashMap<String, Integer>();
@@ -60,6 +71,13 @@ public class SpongeRestore extends JavaPlugin {
     
     // List of transparent blocks
     public HashSet<Byte> transparentBlocks = new HashSet<Byte>();
+    
+    // Worker threads
+    public Executor workerThreads = Executors.newCachedThreadPool();
+    
+    public void onLoad() {
+    	logger = getLogger();
+    }
 
     public void onEnable() {
         spongeAreas = loadSpongeData();
@@ -75,12 +93,12 @@ public class SpongeRestore extends JavaPlugin {
         		} else {
         			pluginSettings = new SRConfig(preSettings, this, false);
         			pluginSettings.createRecipeConfig();
-        			System.out.println("SpongeRecipe created!");
+        			SpongeRestore.logger.log(Level.INFO, "SpongeRecipe created!");
         		}
         		debug = pluginSettings.debug;
         		if (!pluginSettings.upToDate) {
         			pluginSettings.createConfig();
-        			System.out.println("SpongeRestore Configuration updated!");
+        			SpongeRestore.logger.log(Level.INFO, "SpongeRestore Configuration updated!");
         		}
         	} else {
         		if ((new File(spongeRecipeLocation)).exists()) {
@@ -89,13 +107,13 @@ public class SpongeRestore extends JavaPlugin {
         		} else {
         			pluginSettings = new SRConfig(preSettings, this, false);
         			pluginSettings.createRecipeConfig();
-        			System.out.println("SpongeRecipe created!");
+        			SpongeRestore.logger.log(Level.INFO, "SpongeRecipe created!");
         		}
         		pluginSettings.createConfig();
-        		System.out.println("SpongeRestore Configuration created!");
+        		SpongeRestore.logger.log(Level.INFO, "SpongeRestore Configuration created!");
         	}
         } catch (Exception e) {
-        	System.out.println("Could not load configuration! " + e);
+        	SpongeRestore.logger.log(Level.INFO, "Could not load configuration! " + e);
         }
         
         // Set the limits
@@ -126,22 +144,20 @@ public class SpongeRestore extends JavaPlugin {
     	
         // EXAMPLE: Custom code, here we just output some info so we can check all is well
         PluginDescriptionFile pdfFile = this.getDescription();
-        System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
+        SpongeRestore.logger.log(Level.INFO,  pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
     }
     
     public void onDisable() {
     	saveSpongeData();
-        System.out.println("SpongeRestore disabled!");
+        SpongeRestore.logger.log(Level.INFO, "SpongeRestore disabled!");
     }
     
     public void saveSpongeData() {
-    	try{
-    		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(spongeDbLocation));
-    		oos.writeObject(spongeAreas);
-    		oos.flush();
-    		oos.close();
-    	} catch(Exception e){
-    		e.printStackTrace();
+    	SpongeSaveTask spongeSaver = new SpongeSaveTask(this);
+    	if (pluginSettings.threadedSpongeSave) {
+    		workerThreads.execute(spongeSaver);
+    	} else {
+    		spongeSaver.run();
     	}
     }
     
@@ -151,7 +167,7 @@ public class SpongeRestore extends JavaPlugin {
     		// Create the directory and database files!
     		boolean success = (new File(pluginMainDir)).mkdir();
     		if (success) {
-    			System.out.println("New SpongeRestore directory created!");
+    			SpongeRestore.logger.log(Level.INFO, "New SpongeRestore directory created!");
     		}   
     		saveSpongeData();
     	}
@@ -163,7 +179,7 @@ public class SpongeRestore extends JavaPlugin {
     		if (result instanceof ConcurrentHashMap) {
     			return (ConcurrentHashMap<String, Integer>)result;
     		} else if (result instanceof HashMap) {
-    			System.out.println("Updated sponge database to ConcurrentHashMap.");
+    			SpongeRestore.logger.log(Level.INFO, "Updated sponge database to ConcurrentHashMap.");
     			return new ConcurrentHashMap<String, Integer>((Map<String, Integer>)result);
     		}
     	} catch(Exception e){
@@ -227,7 +243,7 @@ public class SpongeRestore extends JavaPlugin {
     							if (chosenArea instanceof CuboidSelection) {
     								LinkedList<Block> toEnable = getSponges(getBlocksInSelection(chosenArea));
     								LinkedList<Block> toDisable = new LinkedList<Block>();
-    								(new Thread(new SRMultiSpongeThread(toEnable, toDisable, this))).start();
+    								workerThreads.execute(new SRMultiSpongeThread(toEnable, toDisable, this));
     								player.sendMessage(ChatColor.GOLD + "Sponges being enabled: " + toEnable.size());
     							} else {
     								player.sendMessage(ChatColor.RED + "Your selection must be cuboid.");
@@ -335,14 +351,14 @@ public class SpongeRestore extends JavaPlugin {
 			for (int y=spongeAreaDownLimit; y<spongeAreaUpLimit; y++) {
 				for (int z=spongeAreaDownLimit; z<spongeAreaUpLimit; z++) {	
 					if(debug) {
-						System.out.println("Checking: " + x + ", " + y + ", " + z);
+						SpongeRestore.logger.log(Level.INFO, "Checking: " + x + ", " + y + ", " + z);
 					}
 					Block currentBlock = spongeBlock.getRelative(x, y, z);
 					addToSpongeAreas(getBlockCoords(currentBlock));
 					if (blockIsAffected(currentBlock)) {
 						currentBlock.setType(Material.AIR);
 						if (debug) {
-							System.out.println("The sponge absorbed " + currentBlock.getType());
+							SpongeRestore.logger.log(Level.INFO, "The sponge absorbed " + currentBlock.getType());
 						}
 					}
 	    		}
@@ -364,7 +380,7 @@ public class SpongeRestore extends JavaPlugin {
 						}
 					}
 					if(debug) {
-						System.out.println("AirSearching: " + x + ", " + y + ", " + z);
+						SpongeRestore.logger.log(Level.INFO, "AirSearching: " + x + ", " + y + ", " + z);
 					}
 					if (isAir(currentBlock)) {
 						currentBlock.setTypeId(36, true); // Technical clear block
@@ -432,37 +448,37 @@ public class SpongeRestore extends JavaPlugin {
     public Boolean isNextToSpongeArea(Block theBlock) {
 		if (spongeAreas.containsKey(getBlockCoords(theBlock.getRelative(BlockFace.NORTH)))) {
 			if (debug) {
-				System.out.println("Fire wont spread north!");
+				SpongeRestore.logger.log(Level.INFO, "Fire wont spread north!");
 			}
 			return true;
 		}
 		if (spongeAreas.containsKey(getBlockCoords(theBlock.getRelative(BlockFace.EAST)))) {
 			if (debug) {
-				System.out.println("Fire wont spread east!");
+				SpongeRestore.logger.log(Level.INFO, "Fire wont spread east!");
 			}
 			return true;
 		}
 		if (spongeAreas.containsKey(getBlockCoords(theBlock.getRelative(BlockFace.SOUTH)))) {
 			if (debug) {
-				System.out.println("Fire wont spread south!");
+				SpongeRestore.logger.log(Level.INFO, "Fire wont spread south!");
 			}
 			return true;
 		}
 		if (spongeAreas.containsKey(getBlockCoords(theBlock.getRelative(BlockFace.WEST)))) {
 			if (debug) {
-				System.out.println("Fire wont spread west!");
+				SpongeRestore.logger.log(Level.INFO, "Fire wont spread west!");
 			}
 			return true;
 		}
 		if (spongeAreas.containsKey(getBlockCoords(theBlock.getRelative(BlockFace.UP)))) {
 			if (debug) {
-				System.out.println("Fire wont spread up!");
+				SpongeRestore.logger.log(Level.INFO, "Fire wont spread up!");
 			}
 			return true;
 		}
 		if (spongeAreas.containsKey(getBlockCoords(theBlock.getRelative(BlockFace.DOWN)))) {
 			if (debug) {
-				System.out.println("Fire wont spread down!");
+				SpongeRestore.logger.log(Level.INFO, "Fire wont spread down!");
 			}
 			return true;
 		}
@@ -501,7 +517,7 @@ public class SpongeRestore extends JavaPlugin {
 					Block currentBlock = theOrigin.getRelative(x, y, z);
 					if (isSponge(currentBlock)) {
 						if(debug) {
-							System.out.println("Sponge found at: " + getBlockCoords(currentBlock));
+							SpongeRestore.logger.log(Level.INFO, "Sponge found at: " + getBlockCoords(currentBlock));
 						}
 						if (enable) {
 							enableSponge(currentBlock);

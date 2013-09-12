@@ -1,11 +1,15 @@
-package pgDev.bukkit.SpongeRestore;
+package pgDev.bukkit.SpongeRestore.listeners;
 
 import java.util.LinkedList;
+import java.util.logging.Level;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.*;
 import org.bukkit.event.block.*;
+
+import pgDev.bukkit.SpongeRestore.SRMultiSpongeThread;
+import pgDev.bukkit.SpongeRestore.SpongeRestore;
 
 public class SRSuperSpongeListener implements Listener {
 	private final SpongeRestore plugin;
@@ -17,11 +21,11 @@ public class SRSuperSpongeListener implements Listener {
 	@EventHandler
 	public void onBlockFromTo(BlockFromToEvent event) {
     	if (plugin.debug) {
-    		System.out.println("Liquid incoming at: " + event.getToBlock().getX() + ", " + event.getToBlock().getY() + ", " + event.getToBlock().getZ());
+    		SpongeRestore.logger.log(Level.INFO, "Liquid incoming at: " + event.getToBlock().getX() + ", " + event.getToBlock().getY() + ", " + event.getToBlock().getZ());
     	}
     	if (plugin.spongeAreas.containsKey(plugin.getBlockCoords(event.getToBlock()))) {
     		if(plugin.debug) {
-    			System.out.println("Recede from sponge!");
+    			SpongeRestore.logger.log(Level.INFO, "Recede from sponge!");
     		}
     		if (plugin.blockIsAffected(event.getBlock())) {
     			event.setCancelled(true);
@@ -38,18 +42,18 @@ public class SRSuperSpongeListener implements Listener {
 	@EventHandler
 	public void onBlockIgnite(BlockIgniteEvent event) {
     	if (plugin.debug) {
-    		System.out.println("Fire incoming at: " + event.getBlock().getX() + ", " + event.getBlock().getY() + ", " + event.getBlock().getZ());
+    		SpongeRestore.logger.log(Level.INFO, "Fire incoming at: " + event.getBlock().getX() + ", " + event.getBlock().getY() + ", " + event.getBlock().getZ());
     	}
-    	if (plugin.pluginSettings.absorbFire) {
+    	if (SpongeRestore.pluginSettings.absorbFire) {
     		if (plugin.spongeAreas.containsKey(plugin.getBlockCoords(event.getBlock()))) {
         		if(plugin.debug) {
-        			System.out.println("Fire shall not pass!");
+        			SpongeRestore.logger.log(Level.INFO, "Fire shall not pass!");
         		}
         		event.setCancelled(true);
-    		} else if ((plugin.isNextToSpongeArea(event.getBlock()) && plugin.pluginSettings.attackFire) && 
-    				!plugin.pluginSettings.excludedWorlds.contains(event.getBlock().getWorld().getName())) {
+    		} else if ((plugin.isNextToSpongeArea(event.getBlock()) && SpongeRestore.pluginSettings.attackFire) && 
+    				!SpongeRestore.pluginSettings.excludedWorlds.contains(event.getBlock().getWorld().getName())) {
     			if (plugin.debug) {
-        			System.out.println("Extinguish fire with sponge!");
+        			SpongeRestore.logger.log(Level.INFO, "Extinguish fire with sponge!");
         		}
     			event.getBlock().setTypeId(0, true);
     			event.setCancelled(true);
@@ -60,12 +64,12 @@ public class SRSuperSpongeListener implements Listener {
 	@EventHandler
 	public void onBlockBurn(BlockBurnEvent event) {
     	if (plugin.debug) {
-    		System.out.println("Block Burning at: " + event.getBlock().getX() + ", " + event.getBlock().getY() + ", " + event.getBlock().getZ());
+    		SpongeRestore.logger.log(Level.INFO, "Block Burning at: " + event.getBlock().getX() + ", " + event.getBlock().getY() + ", " + event.getBlock().getZ());
     	}
-    	if (plugin.pluginSettings.absorbFire) {
-    		if (plugin.spongeAreas.containsKey(plugin.getBlockCoords(event.getBlock())) && !plugin.pluginSettings.excludedWorlds.contains(event.getBlock().getWorld().getName())) {
+    	if (SpongeRestore.pluginSettings.absorbFire) {
+    		if (plugin.spongeAreas.containsKey(plugin.getBlockCoords(event.getBlock())) && !SpongeRestore.pluginSettings.excludedWorlds.contains(event.getBlock().getWorld().getName())) {
         		if (plugin.debug) {
-        			System.out.println("Sponge never lets a block burn!");
+        			SpongeRestore.logger.log(Level.INFO, "Sponge never lets a block burn!");
         		}
         		event.setCancelled(true);
         		plugin.killSurroundingFire(event.getBlock());
@@ -77,11 +81,11 @@ public class SRSuperSpongeListener implements Listener {
 	public void onBlockFade(BlockFadeEvent event) {
     	if (event.getBlock().getType() == Material.ICE) {
     		if (plugin.debug) {
-        		System.out.println("Ice melting at: " + event.getBlock().getX() + ", " + event.getBlock().getY() + ", " + event.getBlock().getZ());
+        		SpongeRestore.logger.log(Level.INFO, "Ice melting at: " + event.getBlock().getX() + ", " + event.getBlock().getY() + ", " + event.getBlock().getZ());
         	}
-    		if (!plugin.pluginSettings.canPlaceWater && plugin.spongeAreas.containsKey(plugin.getBlockCoords(event.getBlock()))) {
+    		if (!SpongeRestore.pluginSettings.canPlaceWater && plugin.spongeAreas.containsKey(plugin.getBlockCoords(event.getBlock()))) {
         		if (plugin.debug) {
-        			System.out.println("Sneaky ice, you thought you could let water in!");
+        			SpongeRestore.logger.log(Level.INFO, "Sneaky ice, you thought you could let water in!");
         		}
         		event.setCancelled(true);
         		event.getBlock().setType(Material.AIR);
@@ -92,7 +96,7 @@ public class SRSuperSpongeListener implements Listener {
 	@EventHandler
 	public void onBlockPistonExtend(BlockPistonExtendEvent event) {
 		if (plugin.hasSponges(event.getBlocks())) {
-			if (plugin.pluginSettings.pistonMove) {
+			if (SpongeRestore.pluginSettings.pistonMove) {
 				LinkedList<Block> movedSponges = plugin.getSponges(event.getBlocks());
 				LinkedList<Block> toEnable = new LinkedList<Block>();
 				LinkedList<Block> toDisable = new LinkedList<Block>();
@@ -116,7 +120,7 @@ public class SRSuperSpongeListener implements Listener {
 						}
 					}
 				}
-				(new Thread(new SRMultiSpongeThread(toEnable, toDisable, plugin))).start();
+				plugin.workerThreads.execute(new SRMultiSpongeThread(toEnable, toDisable, plugin));
 			} else {
 				event.setCancelled(true);
 			}
@@ -126,14 +130,14 @@ public class SRSuperSpongeListener implements Listener {
 	@EventHandler
 	public void onBlockPistonRetract(BlockPistonRetractEvent event) {
 		if (event.isSticky() && plugin.isSponge(event.getRetractLocation().getBlock())) {
-			if (plugin.pluginSettings.pistonMove) {
+			if (SpongeRestore.pluginSettings.pistonMove) {
 				LinkedList<Block> toEnable = new LinkedList<Block>();
 				LinkedList<Block> toDisable = new LinkedList<Block>();
 				//plugin.disableSponge(event.getRetractLocation().getBlock());
 				//plugin.enableSponge(event.getBlock().getRelative(event.getDirection()));
 				toDisable.add(event.getRetractLocation().getBlock());
 				toEnable.add(event.getBlock().getRelative(event.getDirection()));
-				(new Thread(new SRMultiSpongeThread(toEnable, toDisable, plugin))).start();
+				plugin.workerThreads.execute(new SRMultiSpongeThread(toEnable, toDisable, plugin));
 			} else {
 				event.setCancelled(true);
 			}
