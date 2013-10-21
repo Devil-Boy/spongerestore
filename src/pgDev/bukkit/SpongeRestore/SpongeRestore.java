@@ -85,33 +85,30 @@ public class SpongeRestore extends JavaPlugin {
         // Obtain Configuration
         try {
         	Properties preSettings = new Properties();
+        	
+        	// Main configuration
         	if ((new File(pluginConfigLocation)).exists()) {
         		preSettings.load(new FileInputStream(new File(pluginConfigLocation)));
-        		if ((new File(spongeRecipeLocation)).exists()) {
-        			preSettings.load(new FileInputStream(new File(spongeRecipeLocation)));
-        			pluginSettings = new SRConfig(preSettings, this, true);
-        		} else {
-        			pluginSettings = new SRConfig(preSettings, this, false);
-        			pluginSettings.createRecipeConfig();
-        			SpongeRestore.logger.log(Level.INFO, "SpongeRecipe created!");
-        		}
+        		
         		debug = pluginSettings.debug;
         		if (!pluginSettings.upToDate) {
         			pluginSettings.createConfig();
         			SpongeRestore.logger.log(Level.INFO, "SpongeRestore Configuration updated!");
         		}
         	} else {
-        		if ((new File(spongeRecipeLocation)).exists()) {
-        			preSettings.load(new FileInputStream(new File(spongeRecipeLocation)));
-        			pluginSettings = new SRConfig(preSettings, this, true);
-        		} else {
-        			pluginSettings = new SRConfig(preSettings, this, false);
-        			pluginSettings.createRecipeConfig();
-        			SpongeRestore.logger.log(Level.INFO, "SpongeRecipe created!");
-        		}
         		pluginSettings.createConfig();
         		SpongeRestore.logger.log(Level.INFO, "SpongeRestore Configuration created!");
         	}
+        	
+        	// Sponge recipe
+        	if ((new File(spongeRecipeLocation)).exists()) {
+    			preSettings.load(new FileInputStream(new File(spongeRecipeLocation)));
+    			pluginSettings = new SRConfig(preSettings, this, true);
+    		} else {
+    			pluginSettings = new SRConfig(preSettings, this, false);
+    			pluginSettings.createRecipeConfig();
+    			SpongeRestore.logger.log(Level.INFO, "SpongeRecipe created!");
+    		}
         } catch (Exception e) {
         	SpongeRestore.logger.log(Level.INFO, "Could not load configuration! " + e);
         }
@@ -148,13 +145,13 @@ public class SpongeRestore extends JavaPlugin {
     }
     
     public void onDisable() {
-    	saveSpongeData();
+    	saveSpongeData(pluginSettings.threadedSpongeSave);
         SpongeRestore.logger.log(Level.INFO, "SpongeRestore disabled!");
     }
     
-    public void saveSpongeData() {
+    public void saveSpongeData(boolean threaded) {
     	SpongeSaveTask spongeSaver = new SpongeSaveTask(this);
-    	if (pluginSettings.threadedSpongeSave) {
+    	if (threaded) {
     		workerThreads.execute(spongeSaver);
     	} else {
     		spongeSaver.run();
@@ -169,7 +166,7 @@ public class SpongeRestore extends JavaPlugin {
     		if (success) {
     			SpongeRestore.logger.log(Level.INFO, "New SpongeRestore directory created!");
     		}   
-    		saveSpongeData();
+    		saveSpongeData(false);
     	}
     	
     	ObjectInputStream ois = null;
@@ -320,7 +317,7 @@ public class SpongeRestore extends JavaPlugin {
         								player.sendMessage(ChatColor.RED + "The world you specified was not found on this server.");
         							} else {
         								spongeAreas = wipeWorld(spongeAreas, chosenWorld.getName());
-        								saveSpongeData();
+        								saveSpongeData(pluginSettings.threadedSpongeSave);
         								player.sendMessage(ChatColor.GOLD + "All sponge areas cleared from world: " + chosenWorld.getName());
         							}
         						} else {

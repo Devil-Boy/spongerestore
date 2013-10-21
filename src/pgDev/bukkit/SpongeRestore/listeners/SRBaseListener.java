@@ -104,6 +104,6 @@ public class SRBaseListener implements Listener {
 		if (plugin.debug) {
 			SpongeRestore.logger.log(Level.INFO, "World saved, along with sponges!");
 		}
-		plugin.saveSpongeData();
+		plugin.saveSpongeData(plugin.pluginSettings.threadedSpongeSave);
 	}
 }
